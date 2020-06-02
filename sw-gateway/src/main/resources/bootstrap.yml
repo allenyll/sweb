@@ -1,0 +1,18 @@
+server:
+  port: 10001
+
+sw:
+  nacos:
+    server-addr: localhost:8848
+
+spring:
+  application:
+    name: sw-gateway
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${sw.nacos.server-addr}
+      config:
+        server-addr: ${sw.nacos.server-addr}
+
+

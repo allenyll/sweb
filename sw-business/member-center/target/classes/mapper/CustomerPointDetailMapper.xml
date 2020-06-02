@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sw.member.mapper.CustomerPointDetailMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.sw.common.entity.customer.CustomerPointDetail">
+		<id column="pk_point_detail_id" property="pkPointDetailId" />
+		<result column="fk_customer_id" property="fkCustomerId" />
+		<result column="point" property="point" />
+		<result column="type" property="type" />
+		<result column="expired_time" property="expiredTime" />
+		<result column="get_time" property="getTime" />
+		<result column="remark" property="remark" />
+		<result column="is_deleted" property="isDeleted" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        pk_point_detail_id, fk_customer_id, point, type, expired_time, get_time, remark, is_deleted
+    </sql>
+
+</mapper>

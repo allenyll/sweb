@@ -1,0 +1,9 @@
+package ${package}.service;
+
+import org.springframework.stereotype.Service;
+import com.baomidou.mybatisplus.extension.service.IService;
+import ${packageEntity}.entity.${moduleName}.${className};
+
+public interface I${className}Service} extends IService<${className}> {
+
+}

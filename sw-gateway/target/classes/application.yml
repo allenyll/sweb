@@ -1,0 +1,128 @@
+spring:
+  datasource:
+    url: jdbc:mysql://${sw.datasource.ip}:3306/system_web?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull
+    username: ${sw.datasource.username}
+    password: ${sw.datasource.password}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+  profiles:
+    active: cache, dev
+
+###################  mybatis-plus配置  ###################
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*.xml
+  typeAliasesPackage: com.sw.common.entity.*
+  global-config:
+    id-type: auto  #0:数据库ID自增   1:用户输入id  2:全局唯一id(IdWorker)  3:全局唯一ID(uuid)
+    db-column-underline: false  #驼峰下划线转换
+    refresh-mapper: true #刷新mapper 调试神器
+  configuration:
+    lazyLoadingEnabled: true #延时加载的开关
+    multipleResultSetsEnabled: true #开启的话，延时加载一个属性时会加载该对象全部属性，否则按需加载属性
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #打印sql语句,调试用
+
+#################### JWT配置  ###################
+jwt:
+  header: authorization
+  secret: mySecret
+  exp: 64800 #token七天不过期
+  tokenHead: "Bearer "
+  platForm: "JWT_PLATFORM"
+  weChat: "JWT_WX"
+  route:
+    authentication:
+      path: auth
+      refresh: refresh
+      register: "auth/register"
+  ignored:
+    urls:
+      - /test/**
+      - /cache/**W
+      - /wx/**
+      - /sw/**
+
+zuul:
+  host:
+    connect-timeout-millis: 10000
+    socket-timeout-millis: 60000
+#  ribbon-isolation-strategy: thread
+#  ribbon:
+#    eager-load:
+#      enabled: true
+#    threadPool:
+#      useSeparateThreadPools: true
+#      threadPoolKeyPrefix: api-gateway
+#  #关闭重试
+#  retryable: false
+#  #/oauth/token需要请求头处理
+#  sensitive-headers: Access-Control-Allow-Origin
+#  ignored-headers: Access-Control-Allow-Credentials,Access-Control-Allow-Origin,Access-Control-Allow-Methods
+#  add-host-header: true
+  routes:
+# 配置方式一
+#    api-sec:
+#      path: /api-sec/**
+#      serviceId: sw-eureka-client
+    # 用户中心
+    #user-center: /api-user/**
+    user:
+      path: /api-user/**
+      service-id: user-center
+      strip-prefix: true
+      custom-sensitive-headers: true
+    member:
+      path: /api-member/**
+      service-id: member-center
+      strip-prefix: true
+      custom-sensitive-headers: true
+    product:
+      path: /api-product/**
+      service-id: product-center
+      strip-prefix: true
+      custom-sensitive-headers: true
+    order:
+      path: /api-order/**
+      service-id: order-center
+      strip-prefix: true
+      custom-sensitive-headers: true
+    market:
+      path: /api-market/**
+      service-id: market-center
+      strip-prefix: true
+      custom-sensitive-headers: true
+    file:
+      path: /api-file/**
+      service-id: file-center
+      strip-prefix: true
+      custom-sensitive-headers: true
+    generator:
+      path: /api-gen/**
+      service-id: generator-center
+      strip-prefix: true
+      custom-sensitive-headers: true
+    uac:
+      path: /api-uac/**
+      service-id: sw-uac
+      strip-prefix: true
+      custom-sensitive-headers: true
+    job:
+      path: /api-job/**
+      service-id: sw-job
+      strip-prefix: true
+      custom-sensitive-headers: true
+ribbon:
+  ReadTimeout: 50000
+  ConnectTimeout: 50000
+  eureka:
+    enabled: true
+
+feign:
+  sentinel:
+    enabled: true
+  hystrix:
+    enabled: false
+  okhttp:
+    enabled: true
+  httpclient:
+    enabled: false
+

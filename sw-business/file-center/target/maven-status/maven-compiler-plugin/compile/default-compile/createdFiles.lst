@@ -1,0 +1,9 @@
+com/sw/file/mapper/FileMapper.class
+com/sw/file/service/IFileService.class
+com/sw/file/config/MybatisPlusConfig.class
+com/sw/file/util/CosFileUtil.class
+com/sw/file/FileCenterApplication.class
+com/sw/file/controller/FileCosController.class
+com/sw/file/config/CosConfig.class
+com/sw/file/config/SwaggerConfig.class
+com/sw/file/service/impl/FileServiceImpl.class
