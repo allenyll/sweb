@@ -184,7 +184,7 @@ public class BaseController<Service extends ServiceImpl, T extends Entity> {
                         }
                     }
                     if(WrapperConstants.ORDER.equals(condition)){
-                        wrapper.orderBy(true, false, new String[]{val});
+                        wrapper.orderBy(true, Boolean.parseBoolean(entry.getValue().toString()), new String[]{key.substring(key.indexOf("_")+1)});
                     }
                 }
             }

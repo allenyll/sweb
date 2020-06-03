@@ -3,7 +3,7 @@ package com.sw.product.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.sw.client.annotion.CurrentUser;
-import com.sw.client.feign.FileFeignClient;
+import com.sw.client.FileFeignClient;
 import com.sw.common.constants.BaseConstants;
 import com.sw.common.constants.dict.IsOrNoDict;
 import com.sw.common.entity.product.Goods;

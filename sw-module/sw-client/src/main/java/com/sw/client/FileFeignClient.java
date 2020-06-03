@@ -1,4 +1,4 @@
-package com.sw.client.feign;
+package com.sw.client;
 
 import com.sw.client.fallback.FileFallbackFactory;
 import com.sw.common.constants.FeignNameConstants;
@@ -7,6 +7,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Map;
@@ -34,4 +35,7 @@ public interface FileFeignClient {
 
     @RequestMapping(value = "file/dealFile", method = RequestMethod.POST)
     void dealFile(@RequestBody Map<String, Object> param);
+
+    @RequestMapping(value = "file/deleteFile", method = RequestMethod.POST)
+    void deleteFile(@RequestParam String fkId);
 }

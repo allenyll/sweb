@@ -33,4 +33,8 @@
         update_time
     </sql>
 
+    <update id="deleteFile" parameterType="map">
+        update sys_file set is_delete = 1, update_time = #{TIME} where FK_ID = #{FK_ID}
+    </update>
+
 </mapper>

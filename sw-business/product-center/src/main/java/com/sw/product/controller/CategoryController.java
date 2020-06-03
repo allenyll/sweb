@@ -3,7 +3,7 @@ package com.sw.product.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.sw.cache.util.CacheUtil;
 import com.sw.client.annotion.CurrentUser;
-import com.sw.client.feign.FileFeignClient;
+import com.sw.client.FileFeignClient;
 import com.sw.common.constants.BaseConstants;
 import com.sw.common.constants.dict.StatusDict;
 import com.sw.common.entity.product.Category;
@@ -243,14 +243,10 @@ public class CategoryController extends BaseController<CategoryServiceImpl, Cate
     @ResponseBody
     @RequestMapping(value = "add", method = RequestMethod.POST)
     public DataResponse add(@CurrentUser(isFull = true) User user, @RequestBody Category category) {
-
         String id = StringUtil.getUUID32();
         category.setPkCategoryId(id);
         super.add(user, category);
-
-
         List<Map<String, String>> fileList = category.getFileList();
-
         if(CollectionUtil.isNotEmpty(fileList)){
             Map<String, String> map = fileList.get(0);
             String url = MapUtil.getMapValue(map, "url");
@@ -276,7 +272,6 @@ public class CategoryController extends BaseController<CategoryServiceImpl, Cate
     public DataResponse update(@CurrentUser(isFull = true) User user,@RequestBody Category category) {
         String userId = cacheUtil.get("userId");
         List<Map<String, String>> fileList = category.getFileList();
-
         if(CollectionUtil.isNotEmpty(fileList)){
             Map<String, String> map = fileList.get(0);
             String url = MapUtil.getMapValue(map, "url");
@@ -287,6 +282,9 @@ public class CategoryController extends BaseController<CategoryServiceImpl, Cate
             _map.put("USER_ID", userId);
             fileFeignClient.dealFile(_map);
             log.info("处理文件成功");
+        } else {
+            // 删除对应的图片
+            fileFeignClient.deleteFile(category.getPkCategoryId());
         }
         return super.update(user, category);
     }

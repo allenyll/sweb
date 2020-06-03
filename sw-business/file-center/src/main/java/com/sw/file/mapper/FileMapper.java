@@ -4,6 +4,8 @@ package com.sw.file.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.sw.common.entity.user.File;
 
+import java.util.Map;
+
 /**
  * 文件相关信息
  *
@@ -13,4 +15,9 @@ import com.sw.common.entity.user.File;
  */
 public interface FileMapper extends BaseMapper<File> {
 
+    /**
+     * 根据fkId删除文件
+     * @param params
+     */
+    void deleteFile(Map<String, String> params);
 }

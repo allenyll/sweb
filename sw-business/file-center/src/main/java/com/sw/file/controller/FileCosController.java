@@ -8,6 +8,7 @@ import com.sw.common.util.DataResponse;
 import com.sw.common.util.DateUtil;
 import com.sw.common.util.MapUtil;
 import com.sw.client.controller.BaseController;
+import com.sw.file.service.IFileService;
 import com.sw.file.service.impl.FileServiceImpl;
 import com.sw.file.util.CosFileUtil;
 import io.swagger.annotations.Api;
@@ -39,12 +40,12 @@ public class FileCosController extends BaseController<FileServiceImpl, File> {
     private static final String URL = "https://system-web-1257935390.cos.ap-chengdu.myqcloud.com";
 
     @Autowired
-    FileServiceImpl fileService;
+    IFileService fileService;
 
     @ApiOperation("上传文件")
     @ResponseBody
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
-    public DataResponse upload(@CurrentUser(isFull = true) User user, @RequestParam("file") MultipartFile file, @RequestParam String type, @RequestParam String id) throws IOException {
+    public DataResponse upload(@RequestParam("file") MultipartFile file, @RequestParam String type, @RequestParam String id) throws IOException {
         if(file == null) {
             return DataResponse.fail("上传文件不能为空");
         }
@@ -69,7 +70,6 @@ public class FileCosController extends BaseController<FileServiceImpl, File> {
        String downloadUrl = MapUtil.getString(map, "url", "");
 
        if(!"SW1803".equals(type)){
-           String userId = user.getPkUserId();
            // 存入数据库
            File sysFile = new File();
            sysFile.setFileType(type);
@@ -78,8 +78,6 @@ public class FileCosController extends BaseController<FileServiceImpl, File> {
            sysFile.setIsDelete(0);
            sysFile.setAddTime(DateUtil.getCurrentDateTime());
            sysFile.setUpdateTime(DateUtil.getCurrentDateTime());
-           sysFile.setAddUser(userId);
-           sysFile.setUpdateUser(userId);
            fileService.save(sysFile);
        }
 
@@ -140,7 +138,7 @@ public class FileCosController extends BaseController<FileServiceImpl, File> {
 
     @ApiOperation("更新文件")
     @RequestMapping(value = "/dealFile", method = RequestMethod.POST)
-    public void dealFile( @RequestBody Map<String, Object> param) {
+    public void dealFile(@RequestBody Map<String, Object> param) {
         String userId = MapUtil.getString(param, "USER_ID");
         QueryWrapper<File> wrapper = new QueryWrapper<>();
         wrapper.eq("FILE_TYPE", MapUtil.getString(param, "FILE_TYPE"));
@@ -165,6 +163,12 @@ public class FileCosController extends BaseController<FileServiceImpl, File> {
             sysFile.setUpdateUser(userId);
             service.save(sysFile);
         }
+    }
+
+    @ApiOperation("删除文件")
+    @RequestMapping(value = "/deleteFile", method = RequestMethod.POST)
+    public void deleteFile(@RequestParam String fkId) {
+        fileService.deleteFile(fkId);
     }
 
 }

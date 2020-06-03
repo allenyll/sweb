@@ -1,6 +1,6 @@
 package com.sw.client.fallback;
 
-import com.sw.client.feign.FileFeignClient;
+import com.sw.client.FileFeignClient;
 import com.sw.common.entity.user.File;
 import feign.hystrix.FallbackFactory;
 import org.slf4j.Logger;
@@ -50,6 +50,11 @@ public class FileFallbackFactory implements FallbackFactory<FileFeignClient> {
             @Override
             public void dealFile(Map<String, Object> param) {
                 LOGGER.error("处理文件失败");
+            }
+
+            @Override
+            public void deleteFile(String fkId) {
+                LOGGER.error("删除文件失败");
             }
         };
     }
