@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.sw.client.annotion.CurrentUser;
 import com.sw.client.FileFeignClient;
 import com.sw.common.constants.BaseConstants;
+import com.sw.common.constants.dict.FileDict;
 import com.sw.common.constants.dict.IsOrNoDict;
 import com.sw.common.entity.product.Goods;
 import com.sw.common.entity.product.GoodsParam;
@@ -384,7 +385,7 @@ public class GoodsController extends BaseController<GoodsServiceImpl, Goods> {
 
     private void setFile(Goods goods) {
         File file = new File();
-        file.setFileType("SW1801");
+        file.setFileType(FileDict.GOODS.getCode());
         file.setIsDelete(0);
         file.setFkId(goods.getPkGoodsId());
         List<File> sysFiles = fileFeignClient.list(file);

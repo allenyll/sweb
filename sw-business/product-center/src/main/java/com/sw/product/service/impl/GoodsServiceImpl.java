@@ -3,6 +3,8 @@ package com.sw.product.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.sw.cache.util.CacheUtil;
+import com.sw.client.FileFeignClient;
+import com.sw.common.constants.dict.FileDict;
 import com.sw.common.entity.product.*;
 import com.sw.common.util.*;
 import com.sw.product.mapper.GoodsMapper;
@@ -52,6 +54,9 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
     @Autowired
     BrandServiceImpl brandService;
 
+    @Autowired
+    FileFeignClient fileFeignClient;
+
     /**
      * 创建商品
      * @param goodsParam
@@ -75,7 +80,14 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
      * @return
      */
     public int updateGoods(GoodsParam goodsParam) throws Exception {
+        Map<String, Object> map = new HashMap<>();
         String promotionType = goodsParam.getPromotionType();
+        // 更新商品图片
+        List<Map<String, String>> fileList = goodsParam.getSelectSkuPics();
+        map.put("FILE_TYPE", FileDict.GOODS.getCode());
+        map.put("FK_ID", goodsParam.getPkGoodsId());
+        map.put("fileList", fileList);
+        fileFeignClient.updateFile(map);
         // 无优惠不保存优惠信息
         if(!"SW2001".equals(promotionType)){
             // 先删除优惠信息在新增

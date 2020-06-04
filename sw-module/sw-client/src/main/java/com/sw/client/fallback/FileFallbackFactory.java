@@ -56,6 +56,11 @@ public class FileFallbackFactory implements FallbackFactory<FileFeignClient> {
             public void deleteFile(String fkId) {
                 LOGGER.error("删除文件失败");
             }
+
+            @Override
+            public void updateFile(Map<String, Object> params) {
+                LOGGER.error("更新文件失败");
+            }
         };
     }
 }

@@ -5,6 +5,7 @@ import com.sw.cache.util.CacheUtil;
 import com.sw.client.annotion.CurrentUser;
 import com.sw.client.FileFeignClient;
 import com.sw.common.constants.BaseConstants;
+import com.sw.common.constants.dict.FileDict;
 import com.sw.common.constants.dict.StatusDict;
 import com.sw.common.entity.product.Category;
 import com.sw.common.entity.product.CategoryTree;
@@ -80,7 +81,7 @@ public class CategoryController extends BaseController<CategoryServiceImpl, Cate
         if(CollectionUtil.isNotEmpty(categories)){
             for(Category category:categories){
                 File file = new File();
-                file.setFileType("SW1802");
+                file.setFileType(FileDict.CATEGORY.getCode());
                 file.setIsDelete(0);
                 file.setFkId(category.getPkCategoryId());
                 List<File> sysFiles = fileFeignClient.list(file);
@@ -215,7 +216,7 @@ public class CategoryController extends BaseController<CategoryServiceImpl, Cate
 
     private File getFile(Category category) {
         File file = new File();
-        file.setFileType("SW1802");
+        file.setFileType(FileDict.CATEGORY.getCode());
         file.setIsDelete(0);
         file.setFkId(category.getPkCategoryId());
         List<File> _sysFiles = fileFeignClient.list(file);
@@ -253,7 +254,7 @@ public class CategoryController extends BaseController<CategoryServiceImpl, Cate
             String userId = cacheUtil.get("userId");
             // 存入数据库
             File sysFile = new File();
-            sysFile.setFileType("SW1802");
+            sysFile.setFileType(FileDict.CATEGORY.getCode());
             sysFile.setFkId(id);
             sysFile.setFileUrl(url);
             sysFile.setAddTime(DateUtil.getCurrentDateTime());
@@ -276,7 +277,7 @@ public class CategoryController extends BaseController<CategoryServiceImpl, Cate
             Map<String, String> map = fileList.get(0);
             String url = MapUtil.getMapValue(map, "url");
             Map<String, Object> _map = new HashMap<>();
-            _map.put("FILE_TYPE", "SW1802");
+            _map.put("FILE_TYPE", FileDict.CATEGORY.getCode());
             _map.put("FK_ID", category.getPkCategoryId());
             _map.put("URL", url);
             _map.put("USER_ID", userId);

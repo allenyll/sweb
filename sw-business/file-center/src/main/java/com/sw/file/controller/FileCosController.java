@@ -2,8 +2,10 @@ package com.sw.file.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.sw.client.annotion.CurrentUser;
+import com.sw.common.constants.dict.FileDict;
 import com.sw.common.entity.user.File;
 import com.sw.common.entity.user.User;
+import com.sw.common.util.CollectionUtil;
 import com.sw.common.util.DataResponse;
 import com.sw.common.util.DateUtil;
 import com.sw.common.util.MapUtil;
@@ -69,7 +71,7 @@ public class FileCosController extends BaseController<FileServiceImpl, File> {
 
        String downloadUrl = MapUtil.getString(map, "url", "");
 
-       if(!"SW1803".equals(type)){
+       if(!FileDict.ATTR_PIC.getCode().equals(type)){
            // 存入数据库
            File sysFile = new File();
            sysFile.setFileType(type);
@@ -153,7 +155,7 @@ public class FileCosController extends BaseController<FileServiceImpl, File> {
             service.update(sysFile, wrapper);
         }else{
             sysFile = new File();
-            sysFile.setFileType("SW1802");
+            sysFile.setFileType(MapUtil.getString(param, "FILE_TYPE"));
             sysFile.setFkId(MapUtil.getString(param, "FK_ID"));
             sysFile.setFileUrl(MapUtil.getString(param, "URL"));
             sysFile.setAddTime(DateUtil.getCurrentDateTime());
@@ -169,6 +171,28 @@ public class FileCosController extends BaseController<FileServiceImpl, File> {
     @RequestMapping(value = "/deleteFile", method = RequestMethod.POST)
     public void deleteFile(@RequestParam String fkId) {
         fileService.deleteFile(fkId);
+    }
+
+    @RequestMapping(value = "updateFile", method = RequestMethod.POST)
+    public void updateFile(@RequestBody Map<String, Object> params) {
+        String fileType = MapUtil.getString(params, "FILE_TYPE");
+        List<Map<String, String>> fileList = (List<Map<String, String>>) params.get("fileList");
+        String fkId = MapUtil.getString(params, "FK_ID");
+        // 先删除所有关联的图片，在增加
+        fileService.deleteFile(fkId);
+        if (CollectionUtil.isNotEmpty(fileList)) {
+            for (Map<String, String> file:fileList) {
+                // 存入数据库
+                File sysFile = new File();
+                sysFile.setFileType(fileType);
+                sysFile.setFkId(fkId);
+                sysFile.setFileUrl(MapUtil.getString(file, "url"));
+                sysFile.setIsDelete(0);
+                sysFile.setAddTime(DateUtil.getCurrentDateTime());
+                sysFile.setUpdateTime(DateUtil.getCurrentDateTime());
+                fileService.save(sysFile);
+            }
+        }
     }
 
 }

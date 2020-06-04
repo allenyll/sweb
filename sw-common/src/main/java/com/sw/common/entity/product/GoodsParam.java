@@ -31,4 +31,6 @@ public class GoodsParam extends Goods {
     private List<Map<String, Object>> specsList;
 
     private List<Map<String, Object>> skuStockMapList;
+
+    private List<Map<String, String>> selectSkuPics;
 }
