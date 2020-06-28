@@ -3,7 +3,7 @@ package com.sw.product.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.sw.cache.util.CacheUtil;
-import com.sw.client.FileFeignClient;
+import com.sw.client.feign.FileFeignClient;
 import com.sw.common.constants.dict.FileDict;
 import com.sw.common.entity.product.*;
 import com.sw.common.util.*;

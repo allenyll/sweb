@@ -17,7 +17,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,7 +33,7 @@ import java.util.Map;
  * @since 2019-01-09
  */
 @Slf4j
-@Controller
+@RestController
 @RequestMapping("customerPoint")
 @Api(value = "用户积分相关接口")
 public class CustomerPointController extends BaseController<CustomerPointServiceImpl, CustomerPoint> {
@@ -151,5 +150,13 @@ public class CustomerPointController extends BaseController<CustomerPointService
         return DataResponse.success(result);
     }
 
+    @ResponseBody
+    @RequestMapping(value = "/selectOne", method = RequestMethod.POST)
+    public CustomerPoint selectOne(@RequestBody Map<String, Object> map) {
+        QueryWrapper<CustomerPoint> customerPointEntityWrapper = new QueryWrapper<>();
+        customerPointEntityWrapper.eq("IS_DELETE", 0);
+        customerPointEntityWrapper.eq("FK_CUSTOMER_ID", MapUtil.getString(map, "FK_CUSTOMER_ID"));
+        return service.getOne(customerPointEntityWrapper);
+    }
 
 }

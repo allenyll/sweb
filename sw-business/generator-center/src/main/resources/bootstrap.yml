@@ -1,5 +1,5 @@
 server:
-  port: 10014
+  port: 10016
 
 sw:
   nacos:

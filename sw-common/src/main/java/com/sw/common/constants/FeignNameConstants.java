@@ -32,4 +32,9 @@ public interface FeignNameConstants {
      * 营销系统
      */
     String MARKET_SERVICE = "market-center";
+
+    /**
+     * 内容系统
+     */
+    String CMS_SERVICE = "cms-center";
 }

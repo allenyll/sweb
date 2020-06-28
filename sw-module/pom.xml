@@ -17,6 +17,7 @@
         <module>sw-database</module>
         <module>sw-log</module>
         <module>sw-client</module>
+        <module>sw-mq</module>
     </modules>
 
 

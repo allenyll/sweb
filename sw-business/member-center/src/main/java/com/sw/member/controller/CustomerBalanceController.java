@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.sw.common.constants.dict.StatusDict;
 import com.sw.common.entity.customer.CustomerBalance;
 import com.sw.common.entity.customer.CustomerBalanceDetail;
+import com.sw.common.entity.customer.CustomerPoint;
 import com.sw.common.util.*;
 import com.sw.client.controller.BaseController;
 import com.sw.member.service.impl.CustomerBalanceDetailServiceImpl;
@@ -11,18 +12,14 @@ import com.sw.member.service.impl.CustomerBalanceServiceImpl;
 import com.sw.member.service.impl.CustomerServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
-@Controller
+@RestController
 @RequestMapping("customerBalance")
 public class CustomerBalanceController extends BaseController<CustomerBalanceServiceImpl,CustomerBalance> {
 
@@ -116,5 +113,14 @@ public class CustomerBalanceController extends BaseController<CustomerBalanceSer
         result.put("customerBalance", customerBalance);
 
         return DataResponse.success(result);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/selectOne", method = RequestMethod.POST)
+    public CustomerBalance selectOne(@RequestBody Map<String, Object> map) {
+        QueryWrapper<CustomerBalance> wrapper = new QueryWrapper<>();
+        wrapper.eq("IS_DELETE", 0);
+        wrapper.eq("FK_CUSTOMER_ID", MapUtil.getString(map, "FK_CUSTOMER_ID"));
+        return service.getOne(wrapper);
     }
 }

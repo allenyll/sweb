@@ -25,9 +25,9 @@ mybatis-plus:
 cos:
   bucketName: system-web-1257935390
   region: ap-chengdu
-  appId:
-  SecretId:
-  SecretKey:
+  appId: 1257935390
+  SecretId: AKIDWzTL3UwzAAl95d4t2ZGnMMIqV8gFjew8
+  SecretKey: G39JDHYk4tJdDrLpYVO7mQaAau92NWg1
   cosUrl: https://system-web-1257935390.cos.ap-chengdu.myqcloud.com
 
 

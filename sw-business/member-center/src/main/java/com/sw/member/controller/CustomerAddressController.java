@@ -27,7 +27,7 @@ import java.util.Map;
  */
 @Api("地址管理通用接口")
 @Slf4j
-@Controller
+@RestController
 @RequestMapping("/customerAddress")
 public class CustomerAddressController extends BaseController<CustomerAddressServiceImpl, CustomerAddress> {
 

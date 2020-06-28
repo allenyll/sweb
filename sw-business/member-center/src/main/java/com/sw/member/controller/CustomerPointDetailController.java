@@ -4,8 +4,8 @@ package com.sw.member.controller;
 import com.sw.common.entity.customer.CustomerPointDetail;
 import com.sw.client.controller.BaseController;
 import com.sw.member.service.impl.CustomerPointDetailServiceImpl;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * <p>
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @author yu.leilei
  * @since 2019-01-09
  */
-@Controller
+@RestController
 @RequestMapping("customerPointDetail")
 public class CustomerPointDetailController extends BaseController<CustomerPointDetailServiceImpl, CustomerPointDetail> {
 

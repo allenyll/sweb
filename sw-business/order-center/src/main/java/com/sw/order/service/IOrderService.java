@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.sw.common.entity.order.Order;
 import com.sw.common.util.DataResponse;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -120,4 +121,10 @@ public interface IOrderService extends IService<Order> {
      * @return
      */
     List<Order> getOrderList(Map<String, Object> params);
+
+    /**
+     * 取消订单
+     * @param map
+     */
+    DataResponse cancelOrder(Map<String, Object> map);
 }

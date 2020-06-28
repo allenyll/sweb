@@ -4,6 +4,8 @@ import com.sw.client.fallback.CustomerFallbackFactory;
 import com.sw.common.constants.FeignNameConstants;
 import com.sw.common.entity.customer.Customer;
 import com.sw.common.entity.customer.CustomerAddress;
+import com.sw.common.entity.customer.CustomerBalance;
+import com.sw.common.entity.customer.CustomerPoint;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,4 +31,16 @@ public interface CustomerFeignClient {
 
     @RequestMapping(value = "customerAddress/selectAddressById", method = RequestMethod.POST)
     CustomerAddress selectAddressById(@RequestParam String fkAddressId);
+
+    @RequestMapping(value = "customer/updateById", method = RequestMethod.POST)
+    void updateById(@RequestBody Customer customer);
+
+    @RequestMapping(value = "customer/loginOrRegisterConsumer", method = RequestMethod.POST)
+    void loginOrRegisterConsumer(Customer customer);
+
+    @RequestMapping(value = "customerPoint/selectOne", method = RequestMethod.POST)
+    CustomerPoint selectCustomerPointOne(@RequestBody Map<String, Object> map);
+
+    @RequestMapping(value = "customerBalance/selectOne", method = RequestMethod.POST)
+    CustomerBalance selectCustomerBalanceOne(@RequestBody Map<String, Object> map);
 }

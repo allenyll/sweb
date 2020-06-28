@@ -12,6 +12,7 @@ import com.sw.common.entity.user.Dict;
 import com.sw.common.entity.user.User;
 import com.sw.common.util.*;
 import com.sw.order.mapper.OrderMapper;
+import com.sw.order.producer.OrderProducer;
 import com.sw.order.service.IOrderService;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -38,6 +39,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OrderServiceImpl.class);
 
+    private static final long DELAY_TIMES = 30 * 1000;
+
     @Autowired
     OrderMapper orderMapper;
 
@@ -52,6 +55,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
     @Autowired
     OrderOperateLogServiceImpl orderOperateLogService;
+
+    @Autowired
+    OrderProducer orderProducer;
 
     @Override
     public void createOrder(Order order, Map<String, Object> param) {
@@ -102,6 +108,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
         try {
             orderMapper.insert(order);
+            //放入消息队列
+            orderProducer.sendMessage(orderId, DELAY_TIMES);
         } catch (Exception e) {
             LOGGER.info("订单创建异常");
             e.printStackTrace();
@@ -219,6 +227,27 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         dealList(list);
 
         return list;
+    }
+
+    @Override
+    public DataResponse cancelOrder(Map<String, Object> map) {
+        String userId = cacheUtil.get("userId");
+        String orderId = MapUtil.getString(map, "orderId");
+        String note = MapUtil.getString(map, "note");
+        String time = DateUtil.getCurrentDateTime();
+            try {
+                Order order = orderMapper.selectById(orderId);
+                order.setOrderStatus(OrderStatusDict.CANCEL.getCode());
+                order.setUpdateUser(userId);
+                order.setUpdateTime(DateUtil.getCurrentDateTime());
+                orderMapper.updateById(order);
+                // 记录日志
+                dealOperateLog(userId, time, order, note, "cancel");
+            } catch (Exception e) {
+                e.printStackTrace();
+                return DataResponse.fail("订单取消失败");
+            }
+        return DataResponse.success();
     }
 
     private void dealList(List<Order> list) {
@@ -433,6 +462,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             remark = remark + "修改收货人信息";
         } else if ("note".equals(type)) {
             remark = remark + "修改备注信息";
+        } else if ("cancel".equals(type)) {
+            remark = remark + note;
         }
         orderOperateLog.setFkOrderId(order.getPkOrderId());
         orderOperateLog.setOrderStatus(order.getOrderStatus());

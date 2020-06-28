@@ -165,24 +165,33 @@ public class OrderController extends BaseController<OrderServiceImpl,Order> {
         return DataResponse.success(result);
     }
 
-    @ApiOperation("取消订单")
-    @RequestMapping(value = "/cancelOrder/{orderId}", method = RequestMethod.POST)
-    public DataResponse cancelOrder(@PathVariable String orderId){
-        if(StringUtil.isEmpty(orderId)){
-            return DataResponse.fail("订单不存在!");
-        }
-        try {
-            Order order = orderService.getById(orderId);
-            order.setOrderStatus(OrderStatusDict.CANCEL.getCode());
-            order.setUpdateTime(DateUtil.getCurrentDateTime());
-            orderService.updateById(order);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return DataResponse.fail("订单取消失败");
-        }
+//    @ApiOperation("取消订单")
+//    @RequestMapping(value = "/cancelOrder/{orderId}", method = RequestMethod.POST)
+//    public DataResponse cancelOrder(@PathVariable String orderId){
+//        if(StringUtil.isEmpty(orderId)){
+//            return DataResponse.fail("订单不存在!");
+//        }
+//        try {
+//            Order order = orderService.getById(orderId);
+//            order.setOrderStatus(OrderStatusDict.CANCEL.getCode());
+//            order.setUpdateTime(DateUtil.getCurrentDateTime());
+//            orderService.updateById(order);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return DataResponse.fail("订单取消失败");
+//        }
+//
+//        return DataResponse.success();
+//    }
 
-        return DataResponse.success();
+    @ApiOperation("取消订单")
+    @RequestMapping(value = "cancelOrder", method = RequestMethod.POST)
+    public DataResponse cancelOrder(@RequestParam Map<String, Object> params){
+        LOGGER.info("cancelOrder=>params："+params);
+        DataResponse dataResponse = orderService.cancelOrder(params);
+        return dataResponse;
     }
+
 
     @ApiOperation("删除订单")
     @RequestMapping(value = "/deleteOrder/{orderId}", method = RequestMethod.POST)

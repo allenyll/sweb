@@ -60,6 +60,7 @@ public class CouponServiceImpl extends ServiceImpl<CouponMapper,Coupon> implemen
 
         Map<String, Object> map = new HashMap<>();
         map.put("PK_CUSTOMER_ID", customerId);
+        map.put("MARK", "user");
         Customer customer = customerFeignClient.selectOne(map);
         if (customer == null) {
             return DataResponse.fail("用户不存在，请选择！");

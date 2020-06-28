@@ -1,4 +1,4 @@
-package com.sw.client;
+package com.sw.client.feign;
 
 import com.sw.client.fallback.FileFallbackFactory;
 import com.sw.common.constants.FeignNameConstants;

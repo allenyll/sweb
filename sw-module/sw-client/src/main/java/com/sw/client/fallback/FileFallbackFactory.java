@@ -1,6 +1,6 @@
 package com.sw.client.fallback;
 
-import com.sw.client.FileFeignClient;
+import com.sw.client.feign.FileFeignClient;
 import com.sw.common.entity.user.File;
 import feign.hystrix.FallbackFactory;
 import org.slf4j.Logger;

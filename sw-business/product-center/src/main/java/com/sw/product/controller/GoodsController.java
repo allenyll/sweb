@@ -3,10 +3,12 @@ package com.sw.product.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.sw.client.annotion.CurrentUser;
-import com.sw.client.FileFeignClient;
+import com.sw.client.feign.CmsFeignClient;
+import com.sw.client.feign.FileFeignClient;
 import com.sw.common.constants.BaseConstants;
 import com.sw.common.constants.dict.FileDict;
 import com.sw.common.constants.dict.IsOrNoDict;
+import com.sw.common.entity.cms.SearchHistory;
 import com.sw.common.entity.product.Goods;
 import com.sw.common.entity.product.GoodsParam;
 import com.sw.common.entity.user.File;
@@ -40,8 +42,8 @@ public class GoodsController extends BaseController<GoodsServiceImpl, Goods> {
     @Autowired
     GoodsServiceImpl goodsService;
 
-//    @Autowired
-//    SearchHistoryServiceImpl searchHistoryService;
+    @Autowired
+    CmsFeignClient cmsFeignClient;
 
     @ApiOperation("获取商品列表（前端展示使用）")
     @Override
@@ -344,16 +346,16 @@ public class GoodsController extends BaseController<GoodsServiceImpl, Goods> {
             if (StringUtil.isEmpty(customerId)) {
                 return DataResponse.fail("关联用户为空，无法查询");
             }
-//            SearchHistory searchHistory = new SearchHistory();
-//            searchHistory.setFrom("小程序");
-//            searchHistory.setKeyword(keyword);
-//            searchHistory.setUserId(customerId);
-//            searchHistory.setIsDelete(0);
-//            searchHistory.setAddTime(time);
-//            searchHistory.setAddUser(customerId);
-//            searchHistory.setUpdateUser(customerId);
-//            searchHistory.setUpdateTime(time);
-//            searchHistoryService.insert(searchHistory);
+            SearchHistory searchHistory = new SearchHistory();
+            searchHistory.setFrom("小程序");
+            searchHistory.setKeyword(keyword);
+            searchHistory.setUserId(customerId);
+            searchHistory.setIsDelete(0);
+            searchHistory.setAddTime(time);
+            searchHistory.setAddUser(customerId);
+            searchHistory.setUpdateUser(customerId);
+            searchHistory.setUpdateTime(time);
+            cmsFeignClient.insert(searchHistory);
         }
         wrapper.like("KEYWORDS", keyword);
         String categoryId = MapUtil.getMapValue(params, "categoryId");

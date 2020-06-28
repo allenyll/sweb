@@ -20,6 +20,8 @@
         <module>product-center</module>
         <module>market-center</module>
         <module>file-center</module>
+        <module>generator-center</module>
+        <module>cms-center</module>
     </modules>
 
 </project>

@@ -3,6 +3,8 @@ package com.sw.client.fallback;
 import com.sw.client.feign.CustomerFeignClient;
 import com.sw.common.entity.customer.Customer;
 import com.sw.common.entity.customer.CustomerAddress;
+import com.sw.common.entity.customer.CustomerBalance;
+import com.sw.common.entity.customer.CustomerPoint;
 import feign.hystrix.FallbackFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +42,28 @@ public class CustomerFallbackFactory implements FallbackFactory<CustomerFeignCli
             @Override
             public CustomerAddress selectAddressById(String fkAddressId) {
                 LOGGER.error("根据ID获取地址失败");
+                return null;
+            }
+
+            @Override
+            public void updateById(Customer customer) {
+                LOGGER.error("更新用户失败!");
+            }
+
+            @Override
+            public void loginOrRegisterConsumer(Customer customer) {
+                LOGGER.error("注册失败");
+            }
+
+            @Override
+            public CustomerPoint selectCustomerPointOne(Map<String, Object> map) {
+                LOGGER.error("获取用户积分失败");
+                return null;
+            }
+
+            @Override
+            public CustomerBalance selectCustomerBalanceOne(Map<String, Object> map) {
+                LOGGER.error("获取用户余额失败");
                 return null;
             }
         };

@@ -110,6 +110,11 @@ zuul:
       service-id: sw-job
       strip-prefix: true
       custom-sensitive-headers: true
+    wx:
+      path: /api-wx/**
+      service-id: sw-wechat
+      strip-prefix: true
+      custom-sensitive-headers: true
 ribbon:
   ReadTimeout: 50000
   ConnectTimeout: 50000
