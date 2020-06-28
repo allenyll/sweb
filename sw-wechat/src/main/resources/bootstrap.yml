@@ -1,5 +1,12 @@
-server:
+http:
   port: 10004
+
+server:
+  port: 443
+  ssl:
+    key-store: classpath:www.allenyll.com.jks
+    key-store-password: 58024myself?
+    keyStoreType: JKS
 
 sw:
   nacos:
