@@ -3,6 +3,7 @@ package com.sw.gateway.filter;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 import com.sw.client.feign.UacFeignClient;
+import com.sw.common.constants.BaseConstants;
 import com.sw.common.constants.SecurityConstants;
 import com.sw.common.entity.user.User;
 import com.sw.common.util.Result;
@@ -15,6 +16,8 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 @Component
@@ -43,6 +46,7 @@ public class UseInfoFilter extends ZuulFilter {
         RequestContext ctx = RequestContext.getCurrentContext();
         HttpServletRequest request  = ctx.getRequest();
         HttpServletResponse response = ctx.getResponse();
+        final String loginType = request.getHeader(BaseConstants.LOGIN_TYPE);
         System.out.println("method: [" + request.getMethod() + "]");
         if ("OPTIONS".equals(request.getMethod())) {
             response.setStatus(HttpServletResponse.SC_OK);
@@ -50,13 +54,21 @@ public class UseInfoFilter extends ZuulFilter {
         }
         final String header = request.getHeader(HttpHeaders.AUTHORIZATION);
         System.out.println("auth: [" + header + "]");
+        Map<String, String> param = new HashMap<>();
+        param.put("LOGIN_TYPE", loginType);
+        param.put("HEADER", header);
         if (StringUtil.isNotEmpty(header)) {
-            Result<User> result = uacFeignClient.getAuthentication(header);
+            Result<User> result = uacFeignClient.getAuthentication(param);
             if (result.isSuccess()) {
                 User user = result.getObject();
                 if (user != null) {
                     ctx.addZuulRequestHeader(SecurityConstants.USER_HEADER, user.getUserName());
                     ctx.addZuulRequestHeader(SecurityConstants.USER_ID_HEADER, user.getPkUserId());
+                    if (BaseConstants.SW_WECHAT.equals(loginType)) {
+                        ctx.addZuulRequestHeader(SecurityConstants.LOGIN_TYPE, loginType);
+                    } else {
+                        ctx.addZuulRequestHeader(SecurityConstants.LOGIN_TYPE, BaseConstants.SYSTEM_WEB);
+                    }
                 }
             }
         }

@@ -23,12 +23,10 @@ mybatis-plus:
 
 #################### JWT配置  ###################
 jwt:
-  header: authorization
+  header: Authorization
   secret: mySecret
   exp: 64800 #token七天不过期
   tokenHead: "Bearer "
-  platForm: "JWT_PLATFORM"
-  weChat: "JWT_WX"
   route:
     authentication:
       path: auth
@@ -42,3 +40,13 @@ jwt:
       - /sw/**
       - /api-*/**
       - /uac/**
+
+feign:
+  hystrix:
+    enabled: true
+
+ribbon:
+  ReadTimeout: 50000
+  ConnectTimeout: 50000
+  eureka:
+    enabled: true

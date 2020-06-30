@@ -37,4 +37,9 @@ public interface FeignNameConstants {
      * 内容系统
      */
     String CMS_SERVICE = "cms-center";
+
+    /**
+     * 微信系统
+     */
+    String WECHAT_SERVICE = "sw-wechat";
 }

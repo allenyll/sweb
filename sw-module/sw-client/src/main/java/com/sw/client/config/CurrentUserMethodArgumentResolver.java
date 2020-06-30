@@ -1,8 +1,11 @@
 package com.sw.client.config;
 
 import com.sw.client.annotion.CurrentUser;
+import com.sw.client.feign.CustomerFeignClient;
 import com.sw.client.feign.UserFeignClient;
+import com.sw.common.constants.BaseConstants;
 import com.sw.common.constants.SecurityConstants;
+import com.sw.common.entity.customer.Customer;
 import com.sw.common.entity.user.User;
 import com.sw.common.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -25,8 +28,11 @@ public class CurrentUserMethodArgumentResolver implements HandlerMethodArgumentR
 
     private UserFeignClient userFeignClient;
 
-    public CurrentUserMethodArgumentResolver(UserFeignClient userFeignClient) {
+    private CustomerFeignClient customerFeignClient;
+
+    public CurrentUserMethodArgumentResolver(UserFeignClient userFeignClient, CustomerFeignClient customerFeignClient) {
         this.userFeignClient = userFeignClient;
+        this.customerFeignClient = customerFeignClient;
     }
 
     @Override
@@ -43,12 +49,16 @@ public class CurrentUserMethodArgumentResolver implements HandlerMethodArgumentR
         boolean isFull = currentUser.isFull();
         HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
         String userName = request.getHeader(SecurityConstants.USER_HEADER);
+        String loginType = request.getHeader(SecurityConstants.LOGIN_TYPE);
         if (StringUtil.isEmpty(userName)) {
             log.warn("username is empty where execute resolveArgument");
             return null;
         }
         User user;
         if (isFull) {
+            if (loginType.equals(BaseConstants.SW_WECHAT)) {
+                Customer customer = customerFeignClient.selectUserByName(userName);
+            }
             user = userFeignClient.selectUserByName(userName);
         } else {
             user = new User();

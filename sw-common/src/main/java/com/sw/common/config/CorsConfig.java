@@ -22,7 +22,6 @@ public class CorsConfig {
         corsConfiguration.addAllowedOrigin("*"); // 1
         corsConfiguration.addAllowedHeader("*"); // 2
         corsConfiguration.addAllowedMethod("*"); // 3
-        corsConfiguration.addExposedHeader("Authorization");
         return corsConfiguration;
     }
 
@@ -30,7 +29,10 @@ public class CorsConfig {
     public CorsFilter corsFilter(){
         System.out.println("corsFilter");
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", buildConfig());
+        CorsConfiguration corsConfiguration = buildConfig();
+        corsConfiguration.addExposedHeader("Authorization");
+        corsConfiguration.addExposedHeader("login-type");
+        source.registerCorsConfiguration("/**", corsConfiguration);
         return new CorsFilter(source);
     }
 

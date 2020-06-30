@@ -3,12 +3,11 @@ package com.sw.wechat.controller;
 import com.sw.client.feign.CustomerFeignClient;
 import com.sw.common.constants.BaseConstants;
 import com.sw.common.entity.customer.Customer;
+import com.sw.common.entity.wechat.WxUserInfo;
 import com.sw.common.util.DataResponse;
 import com.sw.common.util.DateUtil;
 import com.sw.common.util.MapUtil;
 import com.sw.common.util.StringUtil;
-import com.sw.wechat.entity.JwtAuthenticationResponse;
-import com.sw.wechat.entity.WxUserInfo;
 import com.sw.wechat.service.IWeChatService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -17,7 +16,6 @@ import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -28,9 +26,6 @@ import java.util.Map;
 @RequestMapping(value = "wx")
 @Slf4j
 public class WeChatController {
-
-    @Value("${jwt.weChat}")
-    private String weChat;
 
     @Autowired
     IWeChatService weChatService;
@@ -45,11 +40,11 @@ public class WeChatController {
 
     @ApiOperation(value = "微信授权" ,  notes="微信授权")
     @RequestMapping(value = "/auth", method = RequestMethod.POST)
-    public ResponseEntity<?> createWxAuthenticationToken(@RequestBody WxUserInfo user) throws AuthenticationException {
-        final String token = weChatService.auth(user.getCode());
-
-        // Return the token
-        return ResponseEntity.ok(new JwtAuthenticationResponse(token));
+    public DataResponse auth(@RequestParam String code) {
+        final String token = weChatService.auth(code);
+        DataResponse dataResponse = new DataResponse();
+        dataResponse.put("token", token);
+        return dataResponse;
     }
 
     @ApiOperation(value = "微信登录", notes="微信登录")

@@ -1,4 +1,4 @@
-package com.sw.wechat.entity;
+package com.sw.common.entity.wechat;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;

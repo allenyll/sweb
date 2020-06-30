@@ -100,5 +100,9 @@ public interface SecurityConstants {
      */
     String DEFAULT_IMAGE_FONT_SIZE = "30";
 
+    /**
+     * 登录方式
+     */
+    String LOGIN_TYPE = "LOGIN_TYPE";
 
 }

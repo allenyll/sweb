@@ -2,13 +2,16 @@ package com.sw.wechat.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sw.cache.util.CacheUtil;
 import com.sw.client.feign.CustomerFeignClient;
+import com.sw.common.constants.BaseConstants;
+import com.sw.common.constants.CacheKeys;
 import com.sw.common.constants.dict.UserStatus;
 import com.sw.common.entity.customer.Customer;
 import com.sw.common.entity.customer.CustomerBalance;
 import com.sw.common.entity.customer.CustomerPoint;
+import com.sw.common.entity.wechat.WxCodeResponse;
 import com.sw.common.util.*;
-import com.sw.wechat.entity.WxCodeResponse;
 import com.sw.wechat.properties.WeChatProperties;
 import com.sw.wechat.service.IWeChatService;
 import com.sw.wechat.util.AESUtil;
@@ -51,6 +54,9 @@ public class WeChatServiceImpl implements IWeChatService {
 
     @Autowired
     CustomerFeignClient customerFeignClient;
+
+    @Autowired
+    CacheUtil cacheUtil;
 
     @Override
     public String auth(String code) {
@@ -127,7 +133,7 @@ public class WeChatServiceImpl implements IWeChatService {
     @Override
     public void updateCustomer(Customer customer) {
         Map<String, Object> map = new HashMap<>();
-        map.put("mark", "wx");
+        map.put("MARK", BaseConstants.SW_WECHAT);
         map.put("OPENID", AppContext.getCurrentUserWechatOpenId());
         Customer customerExist = customerFeignClient.selectOne(map);
         customerExist.setUpdateTime(DateUtil.getCurrentDateTime());
@@ -145,11 +151,12 @@ public class WeChatServiceImpl implements IWeChatService {
 
     @Override
     public DataResponse queryUserByOpenId(String openid) {
+        String currentOpenId = cacheUtil.get(CacheKeys.WX_CURRENT_OPENID + "_" + openid);
         Map<String, Object> map = new HashMap<>();
-        if(openid.equals(AppContext.getCurrentUserWechatOpenId())){
+        if(openid.equals(currentOpenId)){
             Map<String, Object> _map = new HashMap<>();
-            _map.put("mark", "wx");
-            _map.put("OPENID", AppContext.getCurrentUserWechatOpenId());
+            _map.put("MARK", BaseConstants.SW_WECHAT);
+            _map.put("OPENID", currentOpenId);
             Customer customer = customerFeignClient.selectOne(_map);
             if(customer != null){
                 map.put("customer", customer);
@@ -177,7 +184,7 @@ public class WeChatServiceImpl implements IWeChatService {
         if(StringUtil.isNotEmpty(phoneNumber)){
             if(response.getOpenid().equals(AppContext.getCurrentUserWechatOpenId())){
                 Map<String, Object> _map = new HashMap<>();
-                _map.put("mark", "wx");
+                _map.put("MARK", BaseConstants.SW_WECHAT);
                 _map.put("OPENID", AppContext.getCurrentUserWechatOpenId());
                 Customer customer = customerFeignClient.selectOne(_map);
                 if(customer != null ){

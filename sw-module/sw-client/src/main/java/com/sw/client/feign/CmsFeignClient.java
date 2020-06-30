@@ -1,6 +1,7 @@
 package com.sw.client.feign;
 
 import com.sw.client.fallback.UserFallbackFactory;
+import com.sw.common.config.FeignConfiguration;
 import com.sw.common.constants.FeignNameConstants;
 import com.sw.common.entity.cms.SearchHistory;
 import com.sw.common.entity.user.User;
@@ -18,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  * @Date:         2020/5/10 11:50 下午
  * @Version:      1.0
  */
-@FeignClient(name = FeignNameConstants.CMS_SERVICE, fallbackFactory = UserFallbackFactory.class, decode404 = true)
+@FeignClient(name = FeignNameConstants.CMS_SERVICE, fallbackFactory = UserFallbackFactory.class, configuration = FeignConfiguration.class, decode404 = true)
 public interface CmsFeignClient {
 
     /**

@@ -106,4 +106,10 @@ public class CustomerServiceImpl extends ServiceImpl<CustomerMapper, Customer> i
         }
     }
 
+    @Override
+    public Customer selectUserByName(String userName) {
+        QueryWrapper<Customer> wrapper = new QueryWrapper<>();
+        wrapper.eq("CUSTOMER_NAME", userName);
+        return customerMapper.selectOne(wrapper);
+    }
 }

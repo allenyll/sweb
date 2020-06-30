@@ -1,9 +1,10 @@
-package com.sw.uac.service.impl;
+package com.sw.uac.service;
 
 
 import com.sw.common.entity.user.User;
 import com.sw.common.util.DataResponse;
 import com.sw.common.util.Result;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Map;
 
@@ -54,8 +55,8 @@ public interface IAuthService{
 
     /**
      * 认证对象
-     * @param token
+     * @param param
      * @return
      */
-    Result<User> getAuthentication(String token);
+    Result<User> getAuthentication(Map<String, String> param);
 }

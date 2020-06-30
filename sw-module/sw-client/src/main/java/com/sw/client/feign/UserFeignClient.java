@@ -1,6 +1,7 @@
 package com.sw.client.feign;
 
 import com.sw.client.fallback.UserFallbackFactory;
+import com.sw.common.config.FeignConfiguration;
 import com.sw.common.constants.FeignNameConstants;
 import com.sw.common.entity.user.Dict;
 import com.sw.common.entity.user.Log;
@@ -21,7 +22,7 @@ import java.util.Map;
  * @Date:         2020/5/4 5:54 下午
  * @Version:      1.0
  */
-@FeignClient(name = FeignNameConstants.USER_SERVICE, fallbackFactory = UserFallbackFactory.class, decode404 = true)
+@FeignClient(name = FeignNameConstants.USER_SERVICE, fallbackFactory = UserFallbackFactory.class, configuration = FeignConfiguration.class, decode404 = true)
 public interface UserFeignClient {
 
     @RequestMapping(value = "user/test", method = RequestMethod.POST)

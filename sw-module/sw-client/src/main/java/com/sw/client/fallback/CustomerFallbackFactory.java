@@ -66,6 +66,12 @@ public class CustomerFallbackFactory implements FallbackFactory<CustomerFeignCli
                 LOGGER.error("获取用户余额失败");
                 return null;
             }
+
+            @Override
+            public Customer selectUserByName(String userName) {
+                LOGGER.error("根据用户名称获取用户失败");
+                return null;
+            }
         };
     }
 }

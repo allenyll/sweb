@@ -1,6 +1,7 @@
 package com.sw.client.feign;
 
 import com.sw.client.fallback.FileFallbackFactory;
+import com.sw.common.config.FeignConfiguration;
 import com.sw.common.constants.FeignNameConstants;
 import com.sw.common.entity.product.GoodsParam;
 import com.sw.common.entity.user.File;
@@ -16,7 +17,7 @@ import java.util.Map;
  * @Date:         2020/5/4 5:54 下午
  * @Version:      1.0
  */
-@FeignClient(name = FeignNameConstants.FILE_SERVICE, fallbackFactory = FileFallbackFactory.class, decode404 = true)
+@FeignClient(name = FeignNameConstants.FILE_SERVICE, fallbackFactory = FileFallbackFactory.class, configuration = FeignConfiguration.class, decode404 = true)
 public interface FileFeignClient {
 
     @RequestMapping(value = "file/selectOne", method = RequestMethod.POST)

@@ -8,6 +8,9 @@ import feign.hystrix.FallbackFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestBody;
+
+import java.util.Map;
 
 /**
  * @Description:  sw-uac 降级策略
@@ -30,7 +33,7 @@ public class UacFallbackFactory implements FallbackFactory<UacFeignClient> {
             }
 
             @Override
-            public Result<User> getAuthentication(String token) {
+            public Result<User> getAuthentication(Map<String, String> param) {
                 LOGGER.error("获取用户失败!");
                 return null;
             }

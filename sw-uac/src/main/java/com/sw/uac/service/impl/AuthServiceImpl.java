@@ -1,12 +1,14 @@
 package com.sw.uac.service.impl;
 
+import com.sw.client.feign.CustomerFeignClient;
 import com.sw.client.feign.UserFeignClient;
+import com.sw.common.constants.BaseConstants;
+import com.sw.common.entity.customer.Customer;
 import com.sw.common.entity.user.SysUserRole;
 import com.sw.common.entity.user.User;
-import com.sw.common.util.DataResponse;
-import com.sw.common.util.Result;
-import com.sw.common.util.StringUtil;
+import com.sw.common.util.*;
 import com.sw.uac.entity.JwtUser;
+import com.sw.uac.service.IAuthService;
 import com.sw.uac.service.IUserAuthService;
 import com.sw.uac.util.JwtUtil;
 import org.slf4j.Logger;
@@ -43,6 +45,9 @@ public class AuthServiceImpl implements IAuthService {
 
     @Resource
     UserDetailsService userDetailsService;
+
+    @Autowired
+    CustomerFeignClient customerFeignClient;
 
     @Resource
     JwtUtil jwtUtil;
@@ -121,19 +126,45 @@ public class AuthServiceImpl implements IAuthService {
     }
 
     @Override
-    public Result<User> getAuthentication(String token) {
+    public Result<User> getAuthentication(Map<String, String> param) {
         Result<User> result = new Result<>();
+        String token = MapUtil.getString(param, "HEADER");
+        String loginType = MapUtil.getString(param, "LOGIN_TYPE");
         final String authToken = token.substring(tokenHead.length());
-        String userName = jwtUtil.getUsernameFromToken(authToken);
-        // 根据account去数据库中查询user数据，足够信任token的情况下，可以省略这一步
-        UserDetails userDetails = this.userDetailsService.loadUserByUsername(userName);
-        if (jwtUtil.validateToken(authToken, userDetails)) {
-            User user = userAuthService.getSysUser(userName);
-            result.setObject(user);
+        if (StringUtil.isNotEmpty(authToken)) {
+            if (StringUtil.isNotEmpty(loginType) && BaseConstants.SW_WECHAT.equals(loginType)) {
+                String[] tokenArr = authToken.split("#");
+                String openid = tokenArr[1];
+                if(openid.equals(AppContext.getCurrentUserWechatOpenId())){
+                    Map<String, Object> _map = new HashMap<>();
+                    _map.put("MARK", BaseConstants.SW_WECHAT);
+                    _map.put("OPENID", AppContext.getCurrentUserWechatOpenId());
+                    Customer customer = customerFeignClient.selectOne(_map);
+                    if (customer != null) {
+                        User user= new User();
+                        user.setPkUserId(customer.getPkCustomerId());
+                        user.setUserName(customer.getCustomerName());
+                        user.setAccount(customer.getCustomerAccount());
+                        result.setObject(user);
+                    }
+                }
+            } else {
+                String userName = jwtUtil.getUsernameFromToken(authToken);
+                // 根据account去数据库中查询user数据，足够信任token的情况下，可以省略这一步
+                UserDetails userDetails = this.userDetailsService.loadUserByUsername(userName);
+                if (jwtUtil.validateToken(authToken, userDetails)) {
+                    User user = userAuthService.getSysUser(userName);
+                    result.setObject(user);
+                } else {
+                    result.fail("token失效");
+                    return result;
+                }
+            }
         } else {
-            result.fail("token失效");
+            result.fail("token为空，验证失败");
             return result;
         }
+
         return result;
     }
 }

@@ -1,5 +1,6 @@
 package com.sw.client.config;
 
+import com.sw.client.feign.CustomerFeignClient;
 import com.sw.client.feign.UserFeignClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -18,6 +19,11 @@ public class LoginArgResolverConfig implements WebMvcConfigurer {
     @Lazy
     @Autowired
     private UserFeignClient userFeignClient;
+
+    @Lazy
+    @Autowired
+    private CustomerFeignClient customerFeignClient;
+
     /**
      * Token参数解析
      *
@@ -25,6 +31,6 @@ public class LoginArgResolverConfig implements WebMvcConfigurer {
      */
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
-        argumentResolvers.add(new CurrentUserMethodArgumentResolver(userFeignClient));
+        argumentResolvers.add(new CurrentUserMethodArgumentResolver(userFeignClient, customerFeignClient));
     }
 }

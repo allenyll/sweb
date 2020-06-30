@@ -1,4 +1,4 @@
-package com.sw.wechat.enums;
+package com.sw.common.constants;
 
 public enum Gender {
     UNKNOW(0, "未知"),

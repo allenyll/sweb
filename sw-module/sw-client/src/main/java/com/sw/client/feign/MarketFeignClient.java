@@ -1,6 +1,7 @@
 package com.sw.client.feign;
 
 import com.sw.client.fallback.MarketFallbackFactory;
+import com.sw.common.config.FeignConfiguration;
 import com.sw.common.constants.FeignNameConstants;
 import com.sw.common.entity.customer.Customer;
 import com.sw.common.entity.market.Coupon;
@@ -19,7 +20,7 @@ import java.util.Map;
  * @Date:         2020/5/4 5:54 下午
  * @Version:      1.0
  */
-@FeignClient(name = FeignNameConstants.MARKET_SERVICE, fallbackFactory = MarketFallbackFactory.class, decode404 = true)
+@FeignClient(name = FeignNameConstants.MARKET_SERVICE, fallbackFactory = MarketFallbackFactory.class, configuration = FeignConfiguration.class, decode404 = true)
 public interface MarketFeignClient {
 
     @RequestMapping(value = "coupon/getCoupons", method = RequestMethod.POST)

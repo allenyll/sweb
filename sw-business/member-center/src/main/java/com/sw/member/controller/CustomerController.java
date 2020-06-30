@@ -2,9 +2,8 @@ package com.sw.member.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.sw.common.constants.dict.UserStatus;
+import com.sw.common.constants.BaseConstants;
 import com.sw.common.entity.customer.Customer;
-import com.sw.common.util.AppContext;
 import com.sw.common.util.MapUtil;
 import com.sw.client.controller.BaseController;
 import com.sw.member.service.impl.CustomerServiceImpl;
@@ -35,7 +34,7 @@ public class CustomerController extends BaseController<CustomerServiceImpl, Cust
         String mark = MapUtil.getString(map, "MARK");
         QueryWrapper<Customer> customerEntityWrapper = new QueryWrapper<>();
         customerEntityWrapper.eq("IS_DELETE", 0);
-        if ("wx".equals(mark)) {
+        if (BaseConstants.SW_WECHAT.equals(mark)) {
             customerEntityWrapper.eq("OPENID", MapUtil.getString(map, "OPENID"));
         } else {
             customerEntityWrapper.eq("PK_CUSTOMER_ID", MapUtil.getString(map, "PK_CUSTOMER_ID"));
@@ -56,8 +55,13 @@ public class CustomerController extends BaseController<CustomerServiceImpl, Cust
     }
 
     @RequestMapping(value = "/loginOrRegisterConsumer", method = RequestMethod.POST)
-    public void loginOrRegisterConsumer(Customer customer) {
+    public void loginOrRegisterConsumer(@RequestBody Customer customer) {
         service.loginOrRegisterConsumer(customer);
+    }
+
+    @RequestMapping(value = "selectUserByName", method = RequestMethod.POST)
+    public Customer selectUserByName(@RequestParam String userName) {
+        return service.selectUserByName(userName);
     }
 
 }

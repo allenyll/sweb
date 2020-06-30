@@ -1,5 +1,9 @@
 package com.sw.uac.filter;
 
+import com.sw.cache.util.CacheUtil;
+import com.sw.common.constants.BaseConstants;
+import com.sw.common.constants.CacheKeys;
+import com.sw.common.util.AppContext;
 import com.sw.common.util.StringUtil;
 import com.sw.uac.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,17 +37,14 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     @Autowired
     JwtUtil jwtUtil;
 
+    @Autowired
+    CacheUtil cacheUtil;
+
     @Value("${jwt.header}")
     private String tokenHeader;
 
     @Value("${jwt.tokenHead}")
     private String tokenHead;
-
-    @Value("${jwt.weChat}")
-    private String weChat;
-
-    @Value("${jwt.platForm}")
-    private String plaForm;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -61,7 +62,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             response.addHeader("Access-Control-Allow-Headers", "*");
             response.addHeader("Access-Control-Max-Age", "1800");//30 min
         }*/
-
+        String loginType = request.getHeader(BaseConstants.LOGIN_TYPE);
         String authHeader = request.getHeader(this.tokenHeader);
         if(StringUtil.isNotEmpty(authHeader) && authHeader.startsWith(tokenHead)){
             // token 在"Bearer "之后
@@ -71,25 +72,33 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
                 throw new RuntimeException("非法访问用户");
             }
 
-            if (StringUtil.isEmpty(authToken)) {
-                throw new RuntimeException("用户身份已过期");
-            }
+            // 如果是微信登录
+            if(loginType.equals(BaseConstants.SW_WECHAT)){
+                // 包含微信openid
+                if (StringUtil.isEmpty(authToken)) {
+                    throw new RuntimeException("用户身份已过期");
+                }
+                // 设置当前登录用户
+                String openId = authToken.substring(authToken.indexOf("#") + 1);
+                cacheUtil.set(CacheKeys.WX_CURRENT_OPENID + "_" +openId, openId);
+                AppContext appContext = new AppContext(openId);
+            } else {
+                // 根据token获取用户名
+                String userName = jwtUtil.getUsernameFromToken(authToken);
+                logger.info("JwtAuthenticationTokenFilter[doFilterInternal] checking authentication " + userName);
 
-            // 根据token获取用户名
-            String userName = jwtUtil.getUsernameFromToken(authToken);
-            logger.info("JwtAuthenticationTokenFilter[doFilterInternal] checking authentication " + userName);
+                // token 校验通过
+                if(StringUtil.isNotEmpty(userName) && SecurityContextHolder.getContext().getAuthentication() == null){
+                    // 根据account去数据库中查询user数据，足够信任token的情况下，可以省略这一步
+                    UserDetails userDetails = this.userDetailsService.loadUserByUsername(userName);
 
-            // token 校验通过
-            if(StringUtil.isNotEmpty(userName) && SecurityContextHolder.getContext().getAuthentication() == null){
-                // 根据account去数据库中查询user数据，足够信任token的情况下，可以省略这一步
-                UserDetails userDetails = this.userDetailsService.loadUserByUsername(userName);
-
-                // 判断token是否有效
-                if(jwtUtil.validateToken(authToken, userDetails)){
-                    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                    authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    logger.info("authenticated user " + userName + ", setting security context");
-                    SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                    // 判断token是否有效
+                    if(jwtUtil.validateToken(authToken, userDetails)){
+                        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                        authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                        logger.info("authenticated user " + userName + ", setting security context");
+                        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                    }
                 }
             }
 

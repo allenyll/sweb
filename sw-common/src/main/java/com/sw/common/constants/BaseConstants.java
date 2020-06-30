@@ -17,4 +17,10 @@ public interface BaseConstants {
     String END_CLASS = ".class";
 
     String MENU_ROOT = "0";
+
+    String SYSTEM_WEB = "sweb";
+
+    String SW_WECHAT = "wx";
+
+    String LOGIN_TYPE = "login-type";
 }

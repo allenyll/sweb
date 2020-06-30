@@ -1,17 +1,21 @@
 package com.sw.uac.controller;
 
+import com.sw.client.feign.WechatFeignClient;
 import com.sw.common.entity.user.User;
+import com.sw.common.entity.wechat.WxUserInfo;
 import com.sw.common.util.DataResponse;
+import com.sw.common.util.MapUtil;
 import com.sw.common.util.Result;
 import com.sw.log.annotation.Log;
 import com.sw.uac.entity.JwtAuthenticationRequest;
 import com.sw.uac.entity.JwtAuthenticationResponse;
-import com.sw.uac.service.impl.IAuthService;
+import com.sw.uac.service.IAuthService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -36,6 +40,9 @@ public class AuthController {
 
     @Resource
     IAuthService authService;
+
+    @Autowired
+    WechatFeignClient wechatFeignClient;
 
     @ApiOperation(value = "测试用")
     @RequestMapping(value = "test", method = RequestMethod.POST)
@@ -87,11 +94,20 @@ public class AuthController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "getAuthentication", method = RequestMethod.GET)
-    public Result<User> getAuthentication(@RequestParam String token) {
-        Result<User> result= authService.getAuthentication(token);
+    @RequestMapping(value = "getAuthentication", method = RequestMethod.POST)
+    public Result<User> getAuthentication(@RequestBody Map<String, String> param) {
+        Result<User> result= authService.getAuthentication(param);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         log.info("getAuthentication().authentication: ", authentication);
         return result;
+    }
+
+    @ApiOperation(value = "微信授权" ,  notes="微信授权")
+    @RequestMapping(value = "/wx/auth", method = RequestMethod.POST)
+    public ResponseEntity<?> createWxAuthenticationToken(@RequestBody WxUserInfo user) throws AuthenticationException {
+        DataResponse dataResponse = wechatFeignClient.auth(user.getCode());
+        String token = MapUtil.getString(dataResponse, "token");
+        // Return the token
+        return ResponseEntity.ok(new JwtAuthenticationResponse(token));
     }
 }

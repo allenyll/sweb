@@ -1,7 +1,6 @@
-package com.sw.wechat.entity;
+package com.sw.common.entity.wechat;
 
-
-import com.sw.wechat.enums.Gender;
+import com.sw.common.constants.Gender;
 import lombok.Data;
 
 /**
