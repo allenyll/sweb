@@ -29,52 +29,52 @@ public class UserFallbackFactory implements FallbackFactory<UserFeignClient> {
         return new UserFeignClient() {
             @Override
             public void test(Map<String, Object> params) {
-                LOGGER.error("调用user-center服务失败");
+                LOGGER.error("FEIGN调用：调用user-center服务失败");
             }
 
             @Override
             public void save(User userToAdd) {
-                LOGGER.error("调用user-center服务的save方法失败");
+                LOGGER.error("FEIGN调用：调用user-center服务的save方法失败");
             }
 
             @Override
             public User selectOne(Map<String, Object> params) {
-                LOGGER.error("调用user-center服务的selectOne方法失败");
+                LOGGER.error("FEIGN调用：调用user-center服务的selectOne方法失败");
                 return null;
             }
 
             @Override
             public SysUserRole selectOneSysUserRole(Map<String, String> params) {
-                LOGGER.error("调用user-center服务的selectOneSysUserRole方法失败");
+                LOGGER.error("FEIGN调用：调用user-center服务的selectOneSysUserRole方法失败");
                 return null;
             }
 
             @Override
             public List<Map<String, Object>> getUserRoleMenuList(Map<String, String> param) {
-                LOGGER.error("调用user-center服务的getUserRoleMenuList方法失败");
+                LOGGER.error("FEIGN调用：调用user-center服务的getUserRoleMenuList方法失败");
                 return null;
             }
 
             @Override
             public void saveLog(Log sysLog) {
-                LOGGER.error("调用user-center服务日志接口的保存日志saveLog方法失败");
+                LOGGER.error("FEIGN调用：调用user-center服务日志接口的保存日志saveLog方法失败");
             }
 
             @Override
             public User selectById(String userId) {
-                LOGGER.error("根据ID获取用户失败");
+                LOGGER.error("FEIGN调用：根据ID获取用户失败");
                 return null;
             }
 
             @Override
             public Dict getDictByCode(String orderStatus) {
-                LOGGER.error("获取字典失败");
+                LOGGER.error("FEIGN调用：获取字典失败");
                 return null;
             }
 
             @Override
             public User selectUserByName(String userName) {
-                LOGGER.error("根据用户名查询用户失败");
+                LOGGER.error("FEIGN调用：根据用户名查询用户失败");
                 return null;
             }
 

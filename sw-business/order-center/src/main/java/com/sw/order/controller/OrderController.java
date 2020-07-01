@@ -2,8 +2,10 @@ package com.sw.order.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.sw.client.annotion.CurrentUser;
 import com.sw.common.constants.dict.OrderStatusDict;
 import com.sw.common.entity.order.Order;
+import com.sw.common.entity.user.User;
 import com.sw.common.util.DataResponse;
 import com.sw.common.util.DateUtil;
 import com.sw.common.util.MapUtil;
@@ -48,56 +50,63 @@ public class OrderController extends BaseController<OrderServiceImpl,Order> {
 
     @ApiOperation("删除订单")
     @RequestMapping(value = "deleteOrder", method = RequestMethod.POST)
-    public DataResponse deleteOrder(@RequestParam Map<String, Object> params){
+    public DataResponse deleteOrder(@CurrentUser(isFull = true) User user, @RequestParam Map<String, Object> params){
         LOGGER.info("deleteOrder=>params："+params);
+        params.put("userId", user.getPkUserId());
         DataResponse dataResponse = orderService.deleteOrder(params);
         return dataResponse;
     }
 
     @ApiOperation("订单发货")
     @RequestMapping(value = "deliveryOrder", method = RequestMethod.POST)
-    public DataResponse deliveryOrder(@RequestParam Map<String, Object> params){
+    public DataResponse deliveryOrder(@CurrentUser(isFull = true) User user, @RequestParam Map<String, Object> params){
         LOGGER.info("deliveryOrder=>params："+params);
+        params.put("userId", user.getPkUserId());
         DataResponse dataResponse = orderService.deliveryOrder(params);
         return dataResponse;
     }
 
     @ApiOperation("关闭订单")
     @RequestMapping(value = "closeOrder", method = RequestMethod.POST)
-    public DataResponse closeOrder(@RequestParam Map<String, Object> params){
+    public DataResponse closeOrder(@CurrentUser(isFull = true) User user, @RequestParam Map<String, Object> params){
         LOGGER.info("closeOrder=>params："+params);
+        params.put("userId", user.getPkUserId());
         DataResponse dataResponse = orderService.closeOrder(params);
         return dataResponse;
     }
 
     @ApiOperation("修改订单金额")
     @RequestMapping(value = "updateMoneyInfo", method = RequestMethod.POST)
-    public DataResponse updateMoneyInfo(@RequestParam Map<String, Object> params){
+    public DataResponse updateMoneyInfo(@CurrentUser(isFull = true) User user, @RequestParam Map<String, Object> params){
         LOGGER.info("updateMoneyInfo=>params："+params);
+        params.put("userId", user.getPkUserId());
         DataResponse dataResponse = orderService.updateMoneyInfo(params);
         return dataResponse;
     }
 
     @ApiOperation("更新收货信息")
     @RequestMapping(value = "updateReceiverInfo", method = RequestMethod.POST)
-    public DataResponse updateReceiverInfo(@RequestParam Map<String, Object> params){
+    public DataResponse updateReceiverInfo(@CurrentUser(isFull = true) User user, @RequestParam Map<String, Object> params){
         LOGGER.info("updateReceiverInfo=>params："+params);
+        params.put("userId", user.getPkUserId());
         DataResponse dataResponse = orderService.updateReceiverInfo(params);
         return dataResponse;
     }
 
     @ApiOperation("修改订单备注")
     @RequestMapping(value = "updateOrderNote", method = RequestMethod.POST)
-    public DataResponse updateOrderNote(@RequestParam Map<String, Object> params){
+    public DataResponse updateOrderNote(@CurrentUser(isFull = true) User user, @RequestParam Map<String, Object> params){
         LOGGER.info("updateOrderNote=>params："+params);
+        params.put("userId", user.getPkUserId());
         DataResponse dataResponse = orderService.updateOrderNote(params);
         return dataResponse;
     }
 
-    @ApiOperation("缓存订单")
-    @RequestMapping(value = "/cacheOrder", method = RequestMethod.POST)
-    public DataResponse cacheOrder(@RequestBody Map<String, Object> param){
+    @ApiOperation("创建订单")
+    @RequestMapping(value = "/createOrder", method = RequestMethod.POST)
+    public DataResponse createOrder(@CurrentUser(isFull = true) User user, @RequestBody Map<String, Object> param){
         Map<String, Object> result = new HashMap<>();
+        param.put("userId", user.getPkUserId());
         log.info("缓存订单参数: {}"+param);
         Order order = new Order();
         try {
@@ -186,8 +195,9 @@ public class OrderController extends BaseController<OrderServiceImpl,Order> {
 
     @ApiOperation("取消订单")
     @RequestMapping(value = "cancelOrder", method = RequestMethod.POST)
-    public DataResponse cancelOrder(@RequestParam Map<String, Object> params){
+    public DataResponse cancelOrder(@CurrentUser(isFull = true) User user, @RequestParam Map<String, Object> params){
         LOGGER.info("cancelOrder=>params："+params);
+        params.put("userId", user.getPkUserId());
         DataResponse dataResponse = orderService.cancelOrder(params);
         return dataResponse;
     }
@@ -231,6 +241,27 @@ public class OrderController extends BaseController<OrderServiceImpl,Order> {
         }
 
         return DataResponse.success();
+    }
+
+    @ApiOperation("根据订单ID获取订单")
+    @RequestMapping(value = "/selectById", method = RequestMethod.POST)
+    public Order selectById(@RequestParam String orderId) {
+        return service.getById(orderId);
+    }
+
+    @ApiOperation("更新订单支付状态")
+    @RequestMapping(value = "/updateById", method = RequestMethod.POST)
+    public void updateById(@RequestBody Order order) {
+        service.updateById(order);
+    }
+
+    @ApiOperation("未支付订单放到消息队列")
+    @ResponseBody
+    @RequestMapping(value = "/sendMessage", method = RequestMethod.POST)
+    public DataResponse sendMessage(@CurrentUser(isFull = true) User user, @RequestBody Map<String, Object> params) {
+        params.put("userId", user.getPkUserId());
+        DataResponse dataResponse = service.sendMessage(params);
+        return dataResponse;
     }
 
 }

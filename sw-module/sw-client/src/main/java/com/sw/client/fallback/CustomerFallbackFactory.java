@@ -29,47 +29,47 @@ public class CustomerFallbackFactory implements FallbackFactory<CustomerFeignCli
         return new CustomerFeignClient() {
             @Override
             public Customer selectOne(Map<String, Object> map) {
-                LOGGER.error("查询用户失败");
+                LOGGER.error("FEIGN调用：查询用户失败");
                 return null;
             }
 
             @Override
             public Customer selectCustomerById(String fkCustomerId) {
-                LOGGER.error("根据ID获取用户失败");
+                LOGGER.error("FEIGN调用：根据ID获取用户失败");
                 return null;
             }
 
             @Override
             public CustomerAddress selectAddressById(String fkAddressId) {
-                LOGGER.error("根据ID获取地址失败");
+                LOGGER.error("FEIGN调用：根据ID获取地址失败");
                 return null;
             }
 
             @Override
             public void updateById(Customer customer) {
-                LOGGER.error("更新用户失败!");
+                LOGGER.error("FEIGN调用：更新用户失败!");
             }
 
             @Override
             public void loginOrRegisterConsumer(Customer customer) {
-                LOGGER.error("注册失败");
+                LOGGER.error("FEIGN调用：注册失败");
             }
 
             @Override
             public CustomerPoint selectCustomerPointOne(Map<String, Object> map) {
-                LOGGER.error("获取用户积分失败");
+                LOGGER.error("FEIGN调用：获取用户积分失败");
                 return null;
             }
 
             @Override
             public CustomerBalance selectCustomerBalanceOne(Map<String, Object> map) {
-                LOGGER.error("获取用户余额失败");
+                LOGGER.error("FEIGN调用：获取用户余额失败");
                 return null;
             }
 
             @Override
             public Customer selectUserByName(String userName) {
-                LOGGER.error("根据用户名称获取用户失败");
+                LOGGER.error("FEIGN调用：根据用户名称获取用户失败");
                 return null;
             }
         };

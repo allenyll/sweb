@@ -58,8 +58,13 @@ public class CurrentUserMethodArgumentResolver implements HandlerMethodArgumentR
         if (isFull) {
             if (loginType.equals(BaseConstants.SW_WECHAT)) {
                 Customer customer = customerFeignClient.selectUserByName(userName);
+                user = new User();
+                user.setPkUserId(customer.getPkCustomerId());
+                user.setUserName(customer.getCustomerName());
+                user.setAccount(customer.getCustomerAccount());
+            } else {
+                user = userFeignClient.selectUserByName(userName);
             }
-            user = userFeignClient.selectUserByName(userName);
         } else {
             user = new User();
             user.setUserName(userName);

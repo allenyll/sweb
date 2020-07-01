@@ -127,4 +127,11 @@ public interface IOrderService extends IService<Order> {
      * @param map
      */
     DataResponse cancelOrder(Map<String, Object> map);
+
+    /**
+     * 将未支付订单放置消息队列中
+     * @param params
+     * @return
+     */
+    DataResponse sendMessage(Map<String, Object> params);
 }

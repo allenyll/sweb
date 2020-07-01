@@ -61,8 +61,8 @@ public class AuthController {
     @ApiOperation(value = "根据用户名密码获取token")
     @RequestMapping(value = "/auth", method = RequestMethod.POST)
     public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtAuthenticationRequest authenticationRequest) throws AuthenticationException {
-        final String token = authService.login(authenticationRequest.getUsername(), authenticationRequest.getPassword());
         // Return the token
+        final String token = authService.login(authenticationRequest.getUsername(), authenticationRequest.getPassword());
         return ResponseEntity.ok(new JwtAuthenticationResponse(token));
     }
 

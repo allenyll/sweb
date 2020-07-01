@@ -64,7 +64,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         }*/
         String loginType = request.getHeader(BaseConstants.LOGIN_TYPE);
         String authHeader = request.getHeader(this.tokenHeader);
-        if(StringUtil.isNotEmpty(authHeader) && authHeader.startsWith(tokenHead)){
+         if(StringUtil.isNotEmpty(authHeader) && authHeader.startsWith(tokenHead)){
             // token 在"Bearer "之后
             final String authToken = authHeader.substring(tokenHead.length());
 

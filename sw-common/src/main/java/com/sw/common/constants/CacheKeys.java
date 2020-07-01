@@ -21,9 +21,14 @@ public class CacheKeys {
     public static final String WX_JWT = "wx_jwt";
 
     /**
-     * 当前登录openid
+     * 当前登录微信用户openid
      */
     public static final String WX_CURRENT_OPENID = "wx_current_openid";
+
+    /**
+     * 当前登录用户id
+     */
+    public static final String CURRENT_USER_ID = "current_user_id_";
 
 
 }

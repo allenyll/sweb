@@ -30,16 +30,18 @@ public class FeignConfiguration implements RequestInterceptor {
     public void apply(RequestTemplate template) {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder
                 .getRequestAttributes();
-        HttpServletRequest request = attributes.getRequest();
-        Enumeration<String> headerNames = request.getHeaderNames();
-        if (headerNames != null) {
-            while (headerNames.hasMoreElements()) {
-                String name = headerNames.nextElement();
-                String values = request.getHeader(name);
-                template.header(name, values);
+        if (attributes != null) {
+            HttpServletRequest request = attributes.getRequest();
+            Enumeration<String> headerNames = request.getHeaderNames();
+            if (headerNames != null) {
+                while (headerNames.hasMoreElements()) {
+                    String name = headerNames.nextElement();
+                    String values = request.getHeader(name);
+                    template.header(name, values);
 
+                }
+                log.info("feign interceptor header:{}",template);
             }
-            log.info("feign interceptor header:{}",template);
         }
     }
 }

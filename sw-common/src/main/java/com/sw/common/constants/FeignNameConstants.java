@@ -34,6 +34,12 @@ public interface FeignNameConstants {
     String MARKET_SERVICE = "market-center";
 
     /**
+     * 订单系统
+     */
+    String ORDER_SERVICE = "order-center";
+
+
+    /**
      * 内容系统
      */
     String CMS_SERVICE = "cms-center";

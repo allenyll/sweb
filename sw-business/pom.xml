@@ -22,6 +22,7 @@
         <module>file-center</module>
         <module>generator-center</module>
         <module>cms-center</module>
+        <module>pay-center</module>
     </modules>
 
 </project>

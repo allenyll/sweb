@@ -251,7 +251,7 @@ public class CategoryController extends BaseController<CategoryServiceImpl, Cate
         if(CollectionUtil.isNotEmpty(fileList)){
             Map<String, String> map = fileList.get(0);
             String url = MapUtil.getMapValue(map, "url");
-            String userId = cacheUtil.get("userId");
+            String userId = user.getPkUserId();
             // 存入数据库
             File sysFile = new File();
             sysFile.setFileType(FileDict.CATEGORY.getCode());
@@ -271,7 +271,7 @@ public class CategoryController extends BaseController<CategoryServiceImpl, Cate
     @ResponseBody
     @RequestMapping(value = "{id}",method = RequestMethod.PUT)
     public DataResponse update(@CurrentUser(isFull = true) User user,@RequestBody Category category) {
-        String userId = cacheUtil.get("userId");
+        String userId = user.getPkUserId();
         List<Map<String, String>> fileList = category.getFileList();
         if(CollectionUtil.isNotEmpty(fileList)){
             Map<String, String> map = fileList.get(0);

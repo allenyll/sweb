@@ -1,5 +1,6 @@
 package com.sw.order.consumer;
 
+import com.sw.common.util.MapUtil;
 import com.sw.order.service.IOrderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,11 +19,10 @@ public class OrderConsumer {
     IOrderService orderService;
 
     @RabbitListener(queues = "sw.order.cancel")
-    public void handle(String orderId) {
-        LOGGER.info("receive delay message orderId:{}", orderId);
-        HashMap<String, Object> map = new HashMap<>();
-        map.put("orderId", orderId);
+    public void handle(HashMap<String, Object> map) {
+        LOGGER.info("receive delay message orderId:{}", MapUtil.getString(map, "orderId"));
         map.put("note", "支付超时自动取消");
+        map.put("opt_name", "rabbit");
         orderService.cancelOrder(map);
     }
 }

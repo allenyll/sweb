@@ -23,7 +23,7 @@ public class CmsFallbackFactory implements FallbackFactory<CmsFeignClient> {
         return new CmsFeignClient() {
             @Override
             public void insert(SearchHistory searchHistory) {
-                LOGGER.error("新增搜索记录失败");
+                LOGGER.error("FEIGN调用：新增搜索记录失败");
             }
         };
     }

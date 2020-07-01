@@ -81,6 +81,11 @@ zuul:
       strip-prefix: true
       custom-sensitive-headers: true
     order:
+      path: /api-pay/**
+      service-id: pay-center
+      strip-prefix: true
+      custom-sensitive-headers: true
+    pay:
       path: /api-order/**
       service-id: order-center
       strip-prefix: true

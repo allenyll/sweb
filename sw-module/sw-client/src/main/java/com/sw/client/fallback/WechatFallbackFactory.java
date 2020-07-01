@@ -23,7 +23,7 @@ public class WechatFallbackFactory implements FallbackFactory<WechatFeignClient>
         return new WechatFeignClient() {
             @Override
             public DataResponse auth(String code) {
-                LOGGER.error("微信授权失败");
+                LOGGER.error("FEIGN调用：微信授权失败");
                 return null;
             }
         };

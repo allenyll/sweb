@@ -28,13 +28,13 @@ public class UacFallbackFactory implements FallbackFactory<UacFeignClient> {
         return new UacFeignClient() {
             @Override
             public DataResponse getUserInfo(String token) {
-                LOGGER.error("调用sw-uac服务的getUserInfo方法失败");
+                LOGGER.error("FEIGN调用：调用sw-uac服务的getUserInfo方法失败");
                 return null;
             }
 
             @Override
             public Result<User> getAuthentication(Map<String, String> param) {
-                LOGGER.error("获取用户失败!");
+                LOGGER.error("FEIGN调用：获取用户失败!");
                 return null;
             }
         };

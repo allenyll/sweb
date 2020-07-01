@@ -28,19 +28,19 @@ public class MarketFallbackFactory implements FallbackFactory<MarketFeignClient>
         return new MarketFeignClient() {
             @Override
             public List<Coupon> getCouponList(Map<String, Object> param) {
-                LOGGER.error("获取优惠券列表失败");
+                LOGGER.error("FEIGN调用：获取优惠券列表失败");
                 return null;
             }
 
             @Override
             public List<CouponDetail> getCouponDetailList(Map<String, Object> param) {
-                LOGGER.error("获取优惠券详情失败");
+                LOGGER.error("FEIGN调用：获取优惠券详情失败");
                 return null;
             }
 
             @Override
             public void updateById(CouponDetail couponDetail) {
-                LOGGER.error("更新优惠券失败");
+                LOGGER.error("FEIGN调用：更新优惠券失败");
             }
         };
     }

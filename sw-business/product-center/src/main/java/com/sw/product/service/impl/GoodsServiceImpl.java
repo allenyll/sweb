@@ -6,6 +6,7 @@ import com.sw.cache.util.CacheUtil;
 import com.sw.client.feign.FileFeignClient;
 import com.sw.common.constants.dict.FileDict;
 import com.sw.common.entity.product.*;
+import com.sw.common.entity.user.User;
 import com.sw.common.util.*;
 import com.sw.product.mapper.GoodsMapper;
 import com.sw.product.service.IGoodsService;
@@ -60,26 +61,28 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
     /**
      * 创建商品
      * @param goodsParam
+     * @param user
      * @return
      * @throws Exception
      */
-    public int createGoods(GoodsParam goodsParam) throws Exception {
+    public int createGoods(GoodsParam goodsParam, User user) throws Exception {
         String promotionType = goodsParam.getPromotionType();
         // 无优惠不保存优惠信息
         if(!"SW2001".equals(promotionType)){
             insertRelateList(goodsFullReduceService, goodsParam.getGoodsFullReduceList(), goodsParam.getPkGoodsId());
             insertRelateList(goodsLadderService, goodsParam.getGoodsLadderList(), goodsParam.getPkGoodsId());
         }
-        insertSkuStock(goodsParam.getSkuStockList(), goodsParam.getPkGoodsId());
+        insertSkuStock(goodsParam.getSkuStockList(), goodsParam.getPkGoodsId(), user);
         return 1;
     }
 
     /**
      * 更新商品
      * @param goodsParam
+     * @param user
      * @return
      */
-    public int updateGoods(GoodsParam goodsParam) throws Exception {
+    public int updateGoods(GoodsParam goodsParam, User user) throws Exception {
         Map<String, Object> map = new HashMap<>();
         String promotionType = goodsParam.getPromotionType();
         // 更新商品图片
@@ -97,7 +100,7 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
             insertRelateList(goodsLadderService, goodsParam.getGoodsLadderList(), goodsParam.getPkGoodsId());
         }
         deleteSkuStock(goodsParam);
-        insertSkuStock(goodsParam.getSkuStockList(), goodsParam.getPkGoodsId());
+        insertSkuStock(goodsParam.getSkuStockList(), goodsParam.getPkGoodsId(), user);
         return 1;
     }
 
@@ -311,8 +314,8 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
      * @param skuStockList
      * @param pkGoodsId
      */
-    private void insertSkuStock(List<Sku> skuStockList, String pkGoodsId) {
-        String userId = cacheUtil.get("userId");
+    private void insertSkuStock(List<Sku> skuStockList, String pkGoodsId, User user) {
+        String userId =  user.getPkUserId();
         if(CollectionUtil.isNotEmpty(skuStockList)){
             for(Sku sku:skuStockList) {
                 dealSkuCode(sku, pkGoodsId);

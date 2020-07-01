@@ -24,6 +24,7 @@
         <module>sw-uac</module>
         <module>sw-gateway</module>
         <module>sw-config</module>
+        <module>sw-wechat</module>
     </modules>
 
     <!-- 保留parent的pom.xml，统一jar的版本 -->

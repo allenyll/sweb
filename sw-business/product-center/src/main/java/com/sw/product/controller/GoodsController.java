@@ -152,7 +152,7 @@ public class GoodsController extends BaseController<GoodsServiceImpl, Goods> {
         }
 
         try {
-            int count = goodsService.createGoods(goodsParam);
+            int count = goodsService.createGoods(goodsParam, user);
             result.put("count", count);
         } catch (Exception e) {
             LOGGER.error("创建商品失败");
@@ -178,7 +178,7 @@ public class GoodsController extends BaseController<GoodsServiceImpl, Goods> {
         }
 
         try {
-            int count = goodsService.updateGoods(goodsParam);
+            int count = goodsService.updateGoods(goodsParam, user);
             result.put("count", count);
         } catch (Exception e) {
             LOGGER.error("创建商品失败");

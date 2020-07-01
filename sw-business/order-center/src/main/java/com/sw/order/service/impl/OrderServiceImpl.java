@@ -2,7 +2,6 @@ package com.sw.order.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.sw.cache.util.CacheUtil;
 import com.sw.client.feign.UserFeignClient;
 import com.sw.common.constants.dict.*;
 import com.sw.common.entity.order.Order;
@@ -46,9 +45,6 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
     @Autowired
     OrderDetailServiceImpl orderDetailService;
-
-    @Autowired
-    protected CacheUtil cacheUtil;
 
     @Autowired
     UserFeignClient userFeignClient;
@@ -108,8 +104,6 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
         try {
             orderMapper.insert(order);
-            //放入消息队列
-            orderProducer.sendMessage(orderId, DELAY_TIMES);
         } catch (Exception e) {
             LOGGER.info("订单创建异常");
             e.printStackTrace();
@@ -231,7 +225,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
     @Override
     public DataResponse cancelOrder(Map<String, Object> map) {
-        String userId = cacheUtil.get("userId");
+        String userId = MapUtil.getString(map, "userId");
+        String optName = MapUtil.getString(map, "opt_name");
         String orderId = MapUtil.getString(map, "orderId");
         String note = MapUtil.getString(map, "note");
         String time = DateUtil.getCurrentDateTime();
@@ -242,12 +237,25 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
                 order.setUpdateTime(DateUtil.getCurrentDateTime());
                 orderMapper.updateById(order);
                 // 记录日志
-                dealOperateLog(userId, time, order, note, "cancel");
+                dealOperateLog(userId, time, order, note, "cancel", optName);
             } catch (Exception e) {
                 e.printStackTrace();
                 return DataResponse.fail("订单取消失败");
             }
         return DataResponse.success();
+    }
+
+    @Override
+    public DataResponse sendMessage(Map<String, Object> params) {
+        //放入消息队列
+        try {
+            orderProducer.sendMessage(params, DELAY_TIMES);
+            return DataResponse.success();
+        } catch (Exception e) {
+            e.printStackTrace();
+            DataResponse.fail("放置消息队列失败");
+        }
+        return null;
     }
 
     private void dealList(List<Order> list) {
@@ -286,7 +294,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
     @Override
     public DataResponse deleteOrder(Map<String, Object> params) {
-        String userId = cacheUtil.get("userId");
+        String userId = MapUtil.getString(params, "userId");
         String ids = MapUtil.getString(params, "ids");
         String[] idArr = ids.split(",");
         String time = DateUtil.getCurrentDateTime();
@@ -299,7 +307,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
                     order.setUpdateTime(DateUtil.getCurrentDateTime());
                     orderMapper.updateById(order);
                     // 记录日志
-                    dealOperateLog(userId, time, order, "", "delete");
+                    dealOperateLog(userId, time, order, "", "delete", "");
                 } catch (Exception e) {
                     e.printStackTrace();
                     return DataResponse.fail("订单删除失败");
@@ -311,7 +319,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
     @Override
     public DataResponse closeOrder(Map<String, Object> params) {
-        String userId = cacheUtil.get("userId");
+        String userId = MapUtil.getString(params, "userId");
         String ids = MapUtil.getString(params, "ids");
         String note = MapUtil.getString(params, "note");
         String[] idArr = ids.split(",");
@@ -326,7 +334,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
                     order.setUpdateTime(time);
                     orderMapper.updateById(order);
                     // 记录日志
-                    dealOperateLog(userId, time, order, note, "close");
+                    dealOperateLog(userId, time, order, note, "close", "");
                 } catch (Exception e) {
                     e.printStackTrace();
                     return DataResponse.fail("订单关闭失败");
@@ -338,7 +346,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
     @Override
     public DataResponse deliveryOrder(Map<String, Object> params) {
-        String userId = cacheUtil.get("userId");
+        String userId = MapUtil.getString(params, "userId");
         String time = DateUtil.getCurrentDateTime();
         String orderId = MapUtil.getString(params, "orderId");
         if (StringUtil.isEmpty(orderId)) {
@@ -354,7 +362,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             order.setUpdateTime(time);
             orderMapper.updateById(order);
             // 记录日志
-            dealOperateLog(userId, time, order, "", "delivery");
+            dealOperateLog(userId, time, order, "", "delivery", "");
         } catch (Exception e) {
             e.printStackTrace();
             return DataResponse.fail("订单发货失败");
@@ -364,7 +372,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
     @Override
     public DataResponse updateMoneyInfo(Map<String, Object> params) {
-        String userId = cacheUtil.get("userId");
+        String userId = MapUtil.getString(params, "userId");
         String time = DateUtil.getCurrentDateTime();
         String orderId = MapUtil.getString(params, "orderId");
         if (StringUtil.isEmpty(orderId)) {
@@ -382,7 +390,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             order.setUpdateTime(time);
             orderMapper.updateById(order);
             // 记录日志
-            dealOperateLog(userId, time, order, "", "money");
+            dealOperateLog(userId, time, order, "", "money", "");
         } catch (Exception e) {
             e.printStackTrace();
             return DataResponse.fail("订单修改金额失败");
@@ -392,7 +400,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
     @Override
     public DataResponse updateReceiverInfo(Map<String, Object> params) {
-        String userId = cacheUtil.get("userId");
+        String userId = MapUtil.getString(params, "userId");
         String time = DateUtil.getCurrentDateTime();
         String orderId = MapUtil.getString(params, "orderId");
         if (StringUtil.isEmpty(orderId)) {
@@ -411,7 +419,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             order.setUpdateTime(time);
             orderMapper.updateById(order);
             // 记录日志
-            dealOperateLog(userId, time, order, "", "receiver");
+            dealOperateLog(userId, time, order, "", "receiver", "");
         } catch (Exception e) {
             e.printStackTrace();
             return DataResponse.fail("订单修改收货地址失败");
@@ -421,7 +429,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
     @Override
     public DataResponse updateOrderNote(Map<String, Object> params) {
-        String userId = cacheUtil.get("userId");
+        String userId = MapUtil.getString(params, "userId");
         String time = DateUtil.getCurrentDateTime();
         String orderId = MapUtil.getString(params, "orderId");
         if (StringUtil.isEmpty(orderId)) {
@@ -434,7 +442,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             order.setUpdateTime(time);
             orderMapper.updateById(order);
             // 记录日志
-            dealOperateLog(userId, time, order, "", "note");
+            dealOperateLog(userId, time, order, "", "note", "");
         } catch (Exception e) {
             e.printStackTrace();
             return DataResponse.fail("订单后台备注失败");
@@ -443,10 +451,16 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     }
 
 
-    private void dealOperateLog(String userId, String time, Order order, String note, String type) {
+    private void dealOperateLog(String userId, String time, Order order, String note, String type, String optName) {
         User user = userFeignClient.selectById(userId);
         if (user == null) {
-            user.setUserName("后台管理员");
+            user = new User();
+            if("rabbit".equals(optName)) {
+                user.setUserName("RABBITMQ消息队列");
+            } else {
+                user.setUserName("后台管理员");
+            }
+
         }
         String remark = "订单";
         OrderOperateLog orderOperateLog = new OrderOperateLog();
@@ -475,4 +489,5 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         orderOperateLog.setUpdateTime(time);
         orderOperateLogService.save(orderOperateLog);
     }
+
 }
