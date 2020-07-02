@@ -38,7 +38,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OrderServiceImpl.class);
 
-    private static final long DELAY_TIMES = 30 * 1000;
+    private static final long DELAY_TIMES = 30 * 60 * 1000;
 
     @Autowired
     OrderMapper orderMapper;

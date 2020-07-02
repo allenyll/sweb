@@ -187,9 +187,14 @@ public class Order extends Entity<Order> {
     @TableField(exist = false)
     private CustomerAddress customerAddress;
 
-
     @TableField(exist = false)
     private Customer customer;
+
+    /**
+     * 待支付剩余时间
+     */
+    @TableField(exist = false)
+    private long unPayTime;
 
 	@Override
     protected Serializable pkVal() {

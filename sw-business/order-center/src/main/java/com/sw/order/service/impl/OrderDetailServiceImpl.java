@@ -8,12 +8,14 @@ import com.sw.common.entity.customer.CustomerAddress;
 import com.sw.common.entity.order.Order;
 import com.sw.common.entity.order.OrderDetail;
 import com.sw.common.entity.order.OrderOperateLog;
+import com.sw.common.util.DateUtil;
 import com.sw.common.util.MapUtil;
 import com.sw.order.mapper.OrderDetailMapper;
 import com.sw.order.service.IOrderDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -26,7 +28,6 @@ import java.util.Map;
  */
 @Service("orderDetailService")
 public class OrderDetailServiceImpl extends ServiceImpl<OrderDetailMapper, OrderDetail> implements IOrderDetailService {
-
 
     @Autowired
     OrderDetailMapper orderDetailMapper;
@@ -56,6 +57,11 @@ public class OrderDetailServiceImpl extends ServiceImpl<OrderDetailMapper, Order
         if(order == null){
             return null;
         }
+        String addTime = order.getOrderTime();
+        Date addDate = DateUtil.stringToDate(addTime, "yyyy-MM-dd HH:mm:ss");
+        Date nowDate = new Date();
+        long unPayTime = addDate.getTime() + 30 * 60 * 1000 - nowDate.getTime() ;
+        order.setUnPayTime(unPayTime);
         Customer customer = customerFeignClient.selectCustomerById(order.getFkCustomerId());
         order.setCustomer(customer);
         CustomerAddress customerAddress = customerFeignClient.selectAddressById(order.getFkAddressId());
@@ -66,4 +72,5 @@ public class OrderDetailServiceImpl extends ServiceImpl<OrderDetailMapper, Order
         order.setOrderOperateLogs(orderOperateLogs);
         return order;
     }
+
 }
