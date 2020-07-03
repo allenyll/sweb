@@ -233,6 +233,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             try {
                 Order order = orderMapper.selectById(orderId);
                 order.setOrderStatus(OrderStatusDict.CANCEL.getCode());
+                order.setNote(note);
                 order.setUpdateUser(userId);
                 order.setUpdateTime(DateUtil.getCurrentDateTime());
                 orderMapper.updateById(order);

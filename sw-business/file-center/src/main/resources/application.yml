@@ -1,13 +1,16 @@
 spring:
+  profiles:
+    active: cache, dev
   datasource:
     url: jdbc:mysql://${sw.datasource.ip}:3306/system_web?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull
     username: ${sw.datasource.username}
     password: ${sw.datasource.password}
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
-
-  profiles:
-    active: cache, dev
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 100MB
 
 ###################  mybatis-plus配置  ###################
 mybatis-plus:
@@ -24,7 +27,7 @@ mybatis-plus:
 
 cos:
   bucketName: system-web-1257935390
-  region: ap-chengdu
+  region: ap-
   appId:
   SecretId:
   SecretKey:

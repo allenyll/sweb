@@ -7,6 +7,10 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
   profiles:
     active: cache, dev
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 100MB
 
 ###################  mybatis-plus配置  ###################
 mybatis-plus:
