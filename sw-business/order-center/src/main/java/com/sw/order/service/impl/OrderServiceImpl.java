@@ -236,9 +236,12 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
                 order.setNote(note);
                 order.setUpdateUser(userId);
                 order.setUpdateTime(DateUtil.getCurrentDateTime());
-                orderMapper.updateById(order);
-                // 记录日志
-                dealOperateLog(userId, time, order, note, "cancel", optName);
+                // 未被主动取消的订单才执行
+                if (!OrderStatusDict.CANCEL.getCode().equals(order.getOrderStatus())) {
+                    orderMapper.updateById(order);
+                    // 记录日志
+                    dealOperateLog(userId, time, order, note, "cancel", optName);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
                 return DataResponse.fail("订单取消失败");
