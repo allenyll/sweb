@@ -44,7 +44,12 @@ public class JwtUtil {
         String userName;
         try {
             final Claims claims = getClaimsFromToken(token);
-            userName = claims.getSubject();
+            if (claims != null) {
+                userName = claims.getSubject();
+            } else {
+                userName = null;
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
             userName = null;

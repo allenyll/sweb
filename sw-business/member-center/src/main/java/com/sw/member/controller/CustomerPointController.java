@@ -68,8 +68,8 @@ public class CustomerPointController extends BaseController<CustomerPointService
         }
 
         DataResponse response = super.page(params);
-
-        List<CustomerPoint> list = (List<CustomerPoint>) response.get("list");
+        Map<String, Object> data = (Map<String, Object>) response.get("data");
+        List<CustomerPoint> list = (List<CustomerPoint>) data.get("list");
         if(!CollectionUtils.isEmpty(list)){
             for(CustomerPoint customerPoint:list){
                 Customer customer = customerService.getById(customerPoint.getFkCustomerId());

@@ -95,7 +95,8 @@ public class DataResponse extends HashMap<String, Object> {
      */
     public static DataResponse success(Map<String, Object> map) {
         DataResponse dataResponse = new DataResponse(true);
-        dataResponse.putAll(map);
+        dataResponse.put("data", map);
+        // dataResponse.putAll(map);
         return dataResponse;
     }
 
@@ -106,6 +107,7 @@ public class DataResponse extends HashMap<String, Object> {
      */
     public static DataResponse success(Object obj) {
         DataResponse dataResponse = new DataResponse(true);
+        dataResponse.put("data", obj);
         return dataResponse;
     }
 

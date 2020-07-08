@@ -51,7 +51,8 @@ public class GoodsController extends BaseController<GoodsServiceImpl, Goods> {
     @RequestMapping(value = "list", method = RequestMethod.POST)
     public DataResponse list() {
         DataResponse dataResponse = super.list();
-        List<Goods> list = (List<Goods>) dataResponse.get("list");
+        Map<String, Object> data = (Map<String, Object>) dataResponse.get("data");
+        List<Goods> list = (List<Goods>) data.get("list");
         Map<String, String> map = new HashMap<>();
         List<Map<String, String>> newList = new ArrayList<>();
         if(CollectionUtil.isNotEmpty(list)){
@@ -63,9 +64,10 @@ public class GoodsController extends BaseController<GoodsServiceImpl, Goods> {
                 newList.add(_map);
             }
         }
-        dataResponse.put("map", map);
-        dataResponse.put("list", newList);
-        return dataResponse;
+        Map<String, Object> result = new HashMap<>();
+        result.put("map", map);
+        result.put("list", newList);
+        return DataResponse.success(result);
     }
 
     @ApiOperation("获取商品列表")
@@ -125,7 +127,8 @@ public class GoodsController extends BaseController<GoodsServiceImpl, Goods> {
 
         LOGGER.info("传入参数=============" + params);
         DataResponse dataResponse = super.page(params);
-        List<Goods> goodsList = (List<Goods>) dataResponse.get("list");
+        Map<String, Object> data = (Map<String, Object>) dataResponse.get("data");
+        List<Goods> goodsList = (List<Goods>) data.get("list");
         if(CollectionUtil.isNotEmpty(goodsList)){
             for(Goods goods:goodsList){
                 setFile(goods);
@@ -204,7 +207,8 @@ public class GoodsController extends BaseController<GoodsServiceImpl, Goods> {
 
         DataResponse dataResponse = super.get(goodsId);
 
-        Goods goods = (Goods) dataResponse.get("obj");
+        Map<String, Object> data = (Map<String, Object>) dataResponse.get("data");
+        Goods goods = (Goods) data.get("obj");
 
         if(goods == null){
             return DataResponse.fail("更新失败, 商品不存在");
@@ -244,7 +248,8 @@ public class GoodsController extends BaseController<GoodsServiceImpl, Goods> {
         Map<String, Object> result = null;
 
         DataResponse dataResponse = super.get(id);
-        Goods goods = (Goods) dataResponse.get("obj");
+        Map<String, Object> data = (Map<String, Object>) dataResponse.get("data");
+        Goods goods = (Goods) data.get("obj");
 
         if(goods == null) {
             return  DataResponse.fail("获取商品失败");

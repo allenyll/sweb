@@ -37,7 +37,8 @@ public class AdController extends BaseController<AdServiceImpl,Ad> {
     @RequestMapping(value = "list", method = RequestMethod.POST)
     public DataResponse list() {
         DataResponse dataResponse = super.list();
-        List<Ad> list = (List<Ad>) dataResponse.get("list");
+        Map<String, Object> data = (Map<String, Object>) dataResponse.get("data");
+        List<Ad> list = (List<Ad>) data.get("list");
         Map<String, String> map = new HashMap<>();
         List<Map<String, String>> newList = new ArrayList<>();
         if(!CollectionUtils.isEmpty(list)){
@@ -49,9 +50,10 @@ public class AdController extends BaseController<AdServiceImpl,Ad> {
                 newList.add(_map);
             }
         }
-        dataResponse.put("map", map);
-        dataResponse.put("list", newList);
-        return dataResponse;
+        Map<String, Object> result = new HashMap<>();
+        result.put("map", map);
+        result.put("list", newList);
+        return DataResponse.success(result);
     }
 
     @ApiOperation("广告列表")

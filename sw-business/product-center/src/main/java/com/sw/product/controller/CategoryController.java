@@ -45,7 +45,8 @@ public class CategoryController extends BaseController<CategoryServiceImpl, Cate
     @RequestMapping(value = "list", method = RequestMethod.POST)
     public DataResponse list() {
         DataResponse dataResponse = super.list();
-        List<Category> list = (List<Category>) dataResponse.get("list");
+        Map<String, Object> data = (Map<String, Object>) dataResponse.get("data");
+        List<Category> list = (List<Category>) data.get("list");
         Map<String, String> map = new HashMap<>();
         List<Map<String, String>> newList = new ArrayList<>();
         if(!CollectionUtils.isEmpty(list)){
@@ -61,9 +62,10 @@ public class CategoryController extends BaseController<CategoryServiceImpl, Cate
                 newList.add(_map);
             }
         }
-        dataResponse.put("map", map);
-        dataResponse.put("list", newList);
-        return dataResponse;
+        Map<String, Object> result = new HashMap<>();
+        result.put("map", map);
+        result.put("list", newList);
+        return DataResponse.success(result);
     }
 
     @ResponseBody
@@ -104,7 +106,8 @@ public class CategoryController extends BaseController<CategoryServiceImpl, Cate
     @RequestMapping(value = "categoryTree", method = RequestMethod.GET)
     public DataResponse categoryTree(){
         DataResponse dataResponse = super.list();
-        List<Category> list = (List<Category>) dataResponse.get("list");
+        Map<String, Object> data = (Map<String, Object>) dataResponse.get("data");
+        List<Category> list = (List<Category>) data.get("list");
         if(!CollectionUtils.isEmpty(list)){
             for(Category _category:list){
                 setParentCategory(_category);
@@ -120,9 +123,9 @@ public class CategoryController extends BaseController<CategoryServiceImpl, Cate
         list.add(category);
 
         List<CategoryTree> trees = getCategoryTree(list, "top");
-
-        dataResponse.put("categoryTree", trees);
-        return dataResponse;
+        Map<String, Object> result = new HashMap<>();
+        result.put("categoryTree", trees);
+        return DataResponse.success(result);
     }
 
     @ResponseBody
@@ -130,7 +133,8 @@ public class CategoryController extends BaseController<CategoryServiceImpl, Cate
     public DataResponse getCategoryInfo(@PathVariable String id){
 
         DataResponse dataResponse = super.get(id);
-        Category category = (Category) dataResponse.get("obj");
+        Map<String, Object> data = (Map<String, Object>) dataResponse.get("data");
+        Category category = (Category) data.get("obj");
 
         // 获取同级分类
         if(category == null){
@@ -154,9 +158,9 @@ public class CategoryController extends BaseController<CategoryServiceImpl, Cate
             }
         }
 
-        dataResponse.put("list", trees);
-        dataResponse.put("obj", setCategoryTree(category));
-
+        data.put("list", trees);
+        data.put("obj", setCategoryTree(category));
+        dataResponse.put("data", data);
         log.info("==================结束调用 get================");
 
         return dataResponse;
@@ -167,7 +171,8 @@ public class CategoryController extends BaseController<CategoryServiceImpl, Cate
     public DataResponse get(@PathVariable String id){
 
         DataResponse dataResponse = super.get(id);
-        Category category = (Category) dataResponse.get("obj");
+        Map<String, Object> data = (Map<String, Object>) dataResponse.get("data");
+        Category category = (Category) data.get("obj");
 
         if(BaseConstants.MENU_ROOT.equals(id)){
             category = new Category();
@@ -206,9 +211,9 @@ public class CategoryController extends BaseController<CategoryServiceImpl, Cate
             dataResponse.put("tree", trees);
         }
 
-        dataResponse.put("file", file);
-        dataResponse.put("obj", category);
-
+        data.put("file", file);
+        data.put("obj", category);
+        dataResponse.put("data", data);
         log.info("==================结束调用 get================");
 
         return dataResponse;

@@ -1,5 +1,6 @@
-package com.sw.common.config;
+package com.sw.gateway.config;
 
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
@@ -34,6 +35,19 @@ public class CorsConfig {
         corsConfiguration.addExposedHeader("login-type");
         source.registerCorsConfiguration("/**", corsConfiguration);
         return new CorsFilter(source);
+    }
+
+    /**
+     * 配置过滤器
+     */
+    @Bean
+    public FilterRegistrationBean someFilterRegistration() {
+        FilterRegistrationBean<CorsFilter> registration = new FilterRegistrationBean<>();
+        registration.setFilter(corsFilter());
+        registration.addUrlPatterns("/*");
+        registration.setName("corsFilter");
+        registration.setOrder(Integer.MIN_VALUE);
+        return registration;
     }
 
    /*

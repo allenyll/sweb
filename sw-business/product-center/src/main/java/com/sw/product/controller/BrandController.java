@@ -28,7 +28,8 @@ public class BrandController extends BaseController<BrandServiceImpl, Brand> {
     @RequestMapping(value = "list", method = RequestMethod.POST)
     public DataResponse list() {
         DataResponse dataResponse = super.list();
-        List<Brand> list = (List<Brand>) dataResponse.get("list");
+        Map<String, Object> data = (Map<String, Object>) dataResponse.get("data");
+        List<Brand> list = (List<Brand>) data.get("list");
         Map<String, String> map = new HashMap<>();
         List<Map<String, String>> newList = new ArrayList<>();
         if(!CollectionUtils.isEmpty(list)){
@@ -40,9 +41,10 @@ public class BrandController extends BaseController<BrandServiceImpl, Brand> {
                 newList.add(_map);
             }
         }
-        dataResponse.put("map", map);
-        dataResponse.put("list", newList);
-        return dataResponse;
+        Map<String, Object> result = new HashMap<>();
+        result.put("map", map);
+        result.put("list", newList);
+        return DataResponse.success(result);
     }
 
 }

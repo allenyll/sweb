@@ -39,7 +39,8 @@ public class AttributesController extends BaseController<AttributesServiceImpl, 
     @RequestMapping(value = "list", method = RequestMethod.POST)
     public DataResponse list() {
         DataResponse dataResponse = super.list();
-        List<Attributes> list = (List<Attributes>) dataResponse.get("list");
+        Map<String, Object> data = (Map<String, Object>) dataResponse.get("data");
+        List<Attributes> list = (List<Attributes>) data.get("list");
         Map<String, String> map = new HashMap<>();
         List<Map<String, String>> newList = new ArrayList<>();
         if(CollectionUtil.isNotEmpty(list)){
@@ -51,9 +52,10 @@ public class AttributesController extends BaseController<AttributesServiceImpl, 
                 newList.add(_map);
             }
         }
-        dataResponse.put("map", map);
-        dataResponse.put("list", newList);
-        return dataResponse;
+        Map<String, Object> result = new HashMap<>();
+        result.put("map", map);
+        result.put("list", newList);
+        return DataResponse.success(result);
     }
 
     @ApiOperation("根据iD获取属性")
@@ -64,7 +66,8 @@ public class AttributesController extends BaseController<AttributesServiceImpl, 
         Map<String, Object> result = new HashMap<>();
 
         DataResponse dataResponse = super.get(id);
-        Attributes obj = (Attributes) dataResponse.get("obj");
+        Map<String, Object> data = (Map<String, Object>) dataResponse.get("data");
+        Attributes obj = (Attributes) data.get("obj");
         if(obj != null){
             String categoryId = obj.getFkCategoryId();
             categoryId = categoryId.substring(1, categoryId.length() - 1).replace("\"", "");

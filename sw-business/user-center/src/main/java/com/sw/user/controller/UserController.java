@@ -116,11 +116,13 @@ public class UserController extends BaseController<UserServiceImpl, User> {
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public DataResponse get(@PathVariable String id){
         DataResponse dataResponse = super.get(id);
-        User user = (User) dataResponse.get("obj");
+        Map<String, Object> data = (Map<String, Object>) dataResponse.get("data");
+        User user = (User) data.get("obj");
         if(user != null){
             setDepotName(user);
         }
-        dataResponse.put("obj", user);
+        data.put("obj", user);
+        dataResponse.put("data", data);
         return dataResponse;
     }
 
@@ -140,8 +142,10 @@ public class UserController extends BaseController<UserServiceImpl, User> {
     public DataResponse page(@RequestParam Map<String, Object> params){
 
         DataResponse dataResponse = super.page(params);
-        List<User> list = buildUserList((List<User>) dataResponse.get("list"));
-        dataResponse.put("list", list);
+        Map<String, Object> data = (Map<String, Object>) dataResponse.get("data");
+        List<User> list = buildUserList((List<User>) data.get("list"));
+        data.put("list", list);
+        dataResponse.put("data", data);
         return dataResponse;
     }
 

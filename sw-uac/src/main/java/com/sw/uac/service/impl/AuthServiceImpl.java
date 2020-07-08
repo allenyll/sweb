@@ -115,6 +115,7 @@ public class AuthServiceImpl implements IAuthService {
             List<Map<String, Object>> menuList = userFeignClient.getUserRoleMenuList(param);
             SysUserRole sysUserRole = userFeignClient.selectOneSysUserRole(param);
             result.put("user", user);
+            result.put("name", user.getUserName());
             result.put("menus", menuList);
             result.put("roles", sysUserRole);
 
@@ -150,6 +151,10 @@ public class AuthServiceImpl implements IAuthService {
                 }
             } else {
                 String userName = jwtUtil.getUsernameFromToken(authToken);
+                if (StringUtil.isEmpty(userName)) {
+                    result.fail("token失效");
+                    return result;
+                }
                 // 根据account去数据库中查询user数据，足够信任token的情况下，可以省略这一步
                 UserDetails userDetails = this.userDetailsService.loadUserByUsername(userName);
                 if (jwtUtil.validateToken(authToken, userDetails)) {

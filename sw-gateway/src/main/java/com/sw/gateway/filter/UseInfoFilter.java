@@ -11,11 +11,14 @@ import com.sw.common.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.netflix.zuul.filters.support.FilterConstants;
 import org.springframework.http.HttpHeaders;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,6 +46,8 @@ public class UseInfoFilter extends ZuulFilter {
 
     @Override
     public Object run() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        log.info("UseInfoFilter.run() authentication: {}", authentication);
         RequestContext ctx = RequestContext.getCurrentContext();
         HttpServletRequest request  = ctx.getRequest();
         HttpServletResponse response = ctx.getResponse();
@@ -58,7 +63,8 @@ public class UseInfoFilter extends ZuulFilter {
         param.put("LOGIN_TYPE", loginType);
         param.put("HEADER", header);
         if (StringUtil.isNotEmpty(header)) {
-            Result<User> result = uacFeignClient.getAuthentication(param);
+            Result<User> result;
+            result = uacFeignClient.getAuthentication(param);
             if (result.isSuccess()) {
                 User user = result.getObject();
                 if (user != null) {
@@ -70,6 +76,10 @@ public class UseInfoFilter extends ZuulFilter {
                         ctx.addZuulRequestHeader(SecurityConstants.LOGIN_TYPE, BaseConstants.SYSTEM_WEB);
                     }
                 }
+            } else {
+                ctx.setSendZuulResponse(false);
+                ctx.setResponseStatusCode(HttpServletResponse.SC_UNAUTHORIZED);
+                ctx.setResponseBody("token invalid");
             }
         }
 

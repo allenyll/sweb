@@ -101,7 +101,8 @@ public class DepotController extends BaseController<DepotServiceImpl, Depot> {
     public DataResponse get(@PathVariable String id){
         LOGGER.info("==================开始调用 get================");
         DataResponse dataResponse = super.get(id);
-        Depot depot = (Depot) dataResponse.get("obj");
+        Map<String, Object> data = (Map<String, Object>) dataResponse.get("data");
+        Depot depot = (Depot) data.get("obj");
 
         if(BaseConstants.MENU_ROOT.equals(id)){
             depot = new Depot();
@@ -111,8 +112,8 @@ public class DepotController extends BaseController<DepotServiceImpl, Depot> {
             setParentDepot(depot);
         }
 
-        dataResponse.put("obj", depot);
-
+        data.put("obj", depot);
+        dataResponse.put("data", data);
         LOGGER.info("==================结束调用 get================");
 
         return dataResponse;

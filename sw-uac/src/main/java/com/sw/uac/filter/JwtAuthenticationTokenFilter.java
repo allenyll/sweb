@@ -80,7 +80,11 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
                 }
                 // 设置当前登录用户
                 String openId = authToken.substring(authToken.indexOf("#") + 1);
-                cacheUtil.set(CacheKeys.WX_CURRENT_OPENID + "_" +openId, openId);
+                String _openId = cacheUtil.get(CacheKeys.WX_CURRENT_OPENID + "_" +openId);
+                if (StringUtil.isEmpty(_openId)) {
+                    cacheUtil.set(CacheKeys.WX_CURRENT_OPENID + "_" +openId, openId);
+                    cacheUtil.expire(CacheKeys.WX_CURRENT_OPENID + "_" +openId, 24 * 60 * 60 * 7L);
+                }
                 AppContext appContext = new AppContext(openId);
             } else {
                 // 根据token获取用户名

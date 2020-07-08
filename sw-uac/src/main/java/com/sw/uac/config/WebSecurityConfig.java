@@ -112,9 +112,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/v2/api-docs").permitAll()
                 .antMatchers("/configuration/ui").permitAll()
                 .antMatchers("/configuration/security").permitAll()
+                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 // swagger end
                 // 对于获取token的rest api要允许匿名访问
-                //.antMatchers("/uac/**").permitAll()
+                // .antMatchers("/api-uac/uac/getUserInfo").permitAll()
                 // 除上面外的所有请求全部需要鉴权认证
                 .anyRequest().authenticated();
 

@@ -24,7 +24,8 @@ public class SpecsGroupController extends BaseController<SpecsGroupServiceImpl, 
     @RequestMapping(value = "list", method = RequestMethod.POST)
     public DataResponse list() {
         DataResponse dataResponse = super.list();
-        List<SpecsGroup> list = (List<SpecsGroup>) dataResponse.get("list");
+        Map<String, Object> data = (Map<String, Object>) dataResponse.get("data");
+        List<SpecsGroup> list = (List<SpecsGroup>) data.get("list");
         Map<String, String> map = new HashMap<>();
         List<Map<String, String>> newList = new ArrayList<>();
         if(CollectionUtil.isNotEmpty(list)){
@@ -36,9 +37,10 @@ public class SpecsGroupController extends BaseController<SpecsGroupServiceImpl, 
                 newList.add(_map);
             }
         }
-        dataResponse.put("map", map);
-        dataResponse.put("list", newList);
-        return dataResponse;
+        Map<String, Object> result = new HashMap<>();
+        result.put("map", map);
+        result.put("list", newList);
+        return DataResponse.success(result);
     }
 
 }

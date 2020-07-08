@@ -24,7 +24,8 @@ public class AdPositionController extends BaseController<AdPositionServiceImpl,A
     @RequestMapping(value = "list", method = RequestMethod.POST)
     public DataResponse list() {
         DataResponse dataResponse = super.list();
-        List<AdPosition> list = (List<AdPosition>) dataResponse.get("list");
+        Map<String, Object> data = (Map<String, Object>) dataResponse.get("data");
+        List<AdPosition> list = (List<AdPosition>) data.get("list");
         Map<String, String> map = new HashMap<>();
         List<Map<String, String>> newList = new ArrayList<>();
         if(!CollectionUtils.isEmpty(list)){
@@ -36,9 +37,10 @@ public class AdPositionController extends BaseController<AdPositionServiceImpl,A
                 newList.add(_map);
             }
         }
-        dataResponse.put("map", map);
-        dataResponse.put("list", newList);
-        return dataResponse;
+        Map<String, Object> result = new HashMap<>();
+        result.put("map", map);
+        result.put("list", newList);
+        return DataResponse.success(result);
     }
 
 }

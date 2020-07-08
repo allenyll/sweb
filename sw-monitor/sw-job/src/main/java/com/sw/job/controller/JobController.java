@@ -41,7 +41,8 @@ public class JobController extends BaseController<JobServiceImpl, Job> {
         }
         super.update(user, job);
         DataResponse dataResponse = super.get(job.getPkJobId());
-        Job oldJob = (Job) dataResponse.get("obj");
+        Map<String, Object> data = (Map<String, Object>) dataResponse.get("data");
+        Job oldJob = (Job) data.get("obj");
         if(oldJob == null){
             return DataResponse.fail("调度任务不能为空!");
         }
@@ -66,7 +67,8 @@ public class JobController extends BaseController<JobServiceImpl, Job> {
         Job job;
         if(StringUtil.isNotEmpty(id)){
             DataResponse dataResponse = super.get(id);
-            job = (Job) dataResponse.get("obj");
+            Map<String, Object> data = (Map<String, Object>) dataResponse.get("data");
+            job = (Job) data.get("obj");
             if(job == null){
                 return DataResponse.fail("调度任务不能为空!");
             }

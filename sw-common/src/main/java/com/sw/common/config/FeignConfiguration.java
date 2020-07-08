@@ -40,7 +40,7 @@ public class FeignConfiguration implements RequestInterceptor {
                     template.header(name, values);
 
                 }
-                log.info("feign interceptor header:{}",template);
+                //log.info("feign interceptor header:{}",template);
             }
         }
     }

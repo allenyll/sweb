@@ -93,6 +93,8 @@ public class CustomerServiceImpl extends ServiceImpl<CustomerMapper, Customer> i
             Date time = calendar.getTime();
             customerPointDetail.setExpiredTime(FORMAT.format(time));
             customerPointDetail.setIsDelete(0);
+            customerPointDetail.setType("SW0501");
+            customerPointDetail.setGetTime(FORMAT.format(time));
             customerPointDetail.setRemark("用户" + customer.getNickName() + "注册赠送5个积分!");
 
             try {
