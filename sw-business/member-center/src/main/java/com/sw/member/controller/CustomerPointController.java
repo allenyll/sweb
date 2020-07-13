@@ -104,7 +104,10 @@ public class CustomerPointController extends BaseController<CustomerPointService
         wrapper.eq("FK_CUSTOMER_ID", customerId);
 
         CustomerPoint customerPoint = customerPointService.getOne(wrapper);
-
+        if (customerPoint == null) {
+            customerPoint = new CustomerPoint();
+            customerPoint.setPoint(0);
+        }
         result.put("customerPoint", customerPoint);
 
         return DataResponse.success(result);

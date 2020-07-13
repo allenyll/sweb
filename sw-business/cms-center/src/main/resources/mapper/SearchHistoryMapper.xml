@@ -7,7 +7,7 @@
     <resultMap type="com.sw.common.entity.cms.SearchHistory" id="searchHistoryMap">
         <result property="pkSearchHistoryId" column="pk_search_history_id"/>
         <result property="keyword" column="keyword"/>
-        <result property="from" column="from"/>
+        <result property="dataSource" column="data_source"/>
         <result property="userId" column="user_id"/>
         <result column="is_delete" property="isDelete" />
         <result column="add_user" property="addUser" />

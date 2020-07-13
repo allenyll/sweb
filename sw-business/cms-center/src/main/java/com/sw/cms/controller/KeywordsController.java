@@ -6,10 +6,8 @@ import com.sw.cms.service.IKeyWordsService;
 import com.sw.cms.service.ISearchHistoryService;
 import com.sw.cms.service.impl.KeywordsServiceImpl;
 import com.sw.common.entity.cms.Keywords;
-import com.sw.common.util.CollectionUtil;
-import com.sw.common.util.DataResponse;
-import com.sw.common.util.MapUtil;
-import com.sw.common.util.StringUtil;
+import com.sw.common.entity.cms.SearchHistory;
+import com.sw.common.util.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -89,6 +87,18 @@ public class KeywordsController extends BaseController<KeywordsServiceImpl, Keyw
         if (keywords != null && keywords.size() > 10) {
             keywords = keywords.subList(0, 10);
         }
+
+        // 新增搜索记录
+        SearchHistory searchHistory = new SearchHistory();
+        searchHistory.setDataSource("小程序");
+        searchHistory.setKeyword(keyword);
+        searchHistory.setUserId(MapUtil.getString(params, "pkCustomerId"));
+        searchHistory.setIsDelete(0);
+        searchHistory.setAddTime(DateUtil.getCurrentDateTime());
+        searchHistory.setAddUser(MapUtil.getString(params, "pkCustomerId"));
+        searchHistory.setUpdateTime(DateUtil.getCurrentDateTime());
+        searchHistory.setUpdateUser(MapUtil.getString(params, "pkCustomerId"));
+        searchHistoryService.save(searchHistory);
 
         result.put("keywordList", keywords);
 

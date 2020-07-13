@@ -300,13 +300,13 @@ public class GoodsController extends BaseController<GoodsServiceImpl, Goods> {
         return DataResponse.success(result);
     }
 
-    @ApiOperation("获取商品详情")
+    @ApiOperation("小程序获取商品详情")
     @ResponseBody
     @RequestMapping(value = "/getGoodsInfo/{id}", method = RequestMethod.POST)
     public DataResponse getGoodsInfo(@PathVariable String id){
         Map<String, Object> result = new HashMap<>();
-        DataResponse data = super.get(id);
-
+        DataResponse dataResponse = super.get(id);
+        Map<String, Object> data = (Map<String, Object>) dataResponse.get("data");
         Goods goods = (Goods) data.get("obj");
         if(goods == null){
             return DataResponse.fail("商品不存在");
@@ -335,6 +335,10 @@ public class GoodsController extends BaseController<GoodsServiceImpl, Goods> {
         QueryWrapper<Goods> wrapper = new QueryWrapper<>();
         wrapper.eq("IS_DELETE", 0);
         String sort = MapUtil.getString(params, "sort");
+        if ("default".equals(sort)) {
+            // 综合排序处理
+            sort = "goods_seq";
+        }
         String order = MapUtil.getString(params, "order");
         boolean isAsc = true;
         if ("asc".endsWith(order)) {
@@ -352,7 +356,7 @@ public class GoodsController extends BaseController<GoodsServiceImpl, Goods> {
                 return DataResponse.fail("关联用户为空，无法查询");
             }
             SearchHistory searchHistory = new SearchHistory();
-            searchHistory.setFrom("小程序");
+            searchHistory.setDataSource("小程序");
             searchHistory.setKeyword(keyword);
             searchHistory.setUserId(customerId);
             searchHistory.setIsDelete(0);
@@ -377,7 +381,8 @@ public class GoodsController extends BaseController<GoodsServiceImpl, Goods> {
             }
         }
 
-        if(total%limit == 0){
+        int num = total%limit;
+        if(num == 0){
             totalPage = total/limit;
         }else{
             totalPage = total/limit + 1;
@@ -402,6 +407,12 @@ public class GoodsController extends BaseController<GoodsServiceImpl, Goods> {
         }else{
             goods.setFileUrl(DEFAULT_URL);
         }
+    }
+
+    public static void main(String[] args) {
+        int count = 0;
+        int i = count%10;
+        System.out.println(i);
     }
 
 }

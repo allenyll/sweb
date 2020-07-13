@@ -30,7 +30,7 @@ public class SearchHistory extends Entity<SearchHistory> {
     private String keyword;
 
 	// 搜索来源，如PC、小程序、APP等
-    private String from;
+    private String dataSource;
 
 	// 会员Id
     private String userId;

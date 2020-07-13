@@ -110,6 +110,11 @@ public class CustomerBalanceController extends BaseController<CustomerBalanceSer
 
         CustomerBalance customerBalance = customerBalanceService.getOne(wrapper);
 
+        if (customerBalance == null) {
+            customerBalance = new CustomerBalance();
+            customerBalance.setBalance(new BigDecimal(0));
+        }
+
         result.put("customerBalance", customerBalance);
 
         return DataResponse.success(result);

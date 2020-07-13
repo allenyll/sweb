@@ -14,6 +14,8 @@ import com.sw.common.entity.user.User;
 import com.sw.common.util.*;
 import com.sw.client.controller.BaseController;
 import com.sw.product.service.impl.CategoryServiceImpl;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -26,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 @Slf4j
+@Api(tags = "商品分类接口")
 @Controller
 @RequestMapping("category")
 public class CategoryController extends BaseController<CategoryServiceImpl, Category> {
@@ -41,6 +44,7 @@ public class CategoryController extends BaseController<CategoryServiceImpl, Cate
     CategoryServiceImpl categoryService;
 
     @Override
+    @ApiOperation("组装分类前台展示")
     @ResponseBody
     @RequestMapping(value = "list", method = RequestMethod.POST)
     public DataResponse list() {
@@ -68,6 +72,7 @@ public class CategoryController extends BaseController<CategoryServiceImpl, Cate
         return DataResponse.success(result);
     }
 
+    @ApiOperation("获取分类树")
     @ResponseBody
     @RequestMapping(value = "tree", method = RequestMethod.GET)
     public DataResponse tree(String name){
@@ -102,6 +107,7 @@ public class CategoryController extends BaseController<CategoryServiceImpl, Cate
         return DataResponse.success(result);
     }
 
+    @ApiOperation("获取分类树")
     @ResponseBody
     @RequestMapping(value = "categoryTree", method = RequestMethod.GET)
     public DataResponse categoryTree(){
@@ -128,6 +134,7 @@ public class CategoryController extends BaseController<CategoryServiceImpl, Cate
         return DataResponse.success(result);
     }
 
+    @ApiOperation("小程序获取分类详情")
     @ResponseBody
     @RequestMapping(value = "getCategoryInfo/{id}", method = RequestMethod.GET)
     public DataResponse getCategoryInfo(@PathVariable String id){
@@ -166,6 +173,7 @@ public class CategoryController extends BaseController<CategoryServiceImpl, Cate
         return dataResponse;
     }
 
+    @ApiOperation("小程序根据ID获取分类")
     @ResponseBody
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public DataResponse get(@PathVariable String id){
@@ -208,7 +216,7 @@ public class CategoryController extends BaseController<CategoryServiceImpl, Cate
 
         if(!"0".equals(id)){
             List<CategoryTree> trees = getCategoryTree(childCategoryList, "0");
-            dataResponse.put("tree", trees);
+            data.put("tree", trees);
         }
 
         data.put("file", file);
@@ -245,6 +253,7 @@ public class CategoryController extends BaseController<CategoryServiceImpl, Cate
         return categoryTree;
     }
 
+    @ApiOperation("添加分类")
     @Override
     @ResponseBody
     @RequestMapping(value = "add", method = RequestMethod.POST)
@@ -272,6 +281,7 @@ public class CategoryController extends BaseController<CategoryServiceImpl, Cate
         return DataResponse.success();
     }
 
+    @ApiOperation("更新分类")
     @Override
     @ResponseBody
     @RequestMapping(value = "{id}",method = RequestMethod.PUT)
