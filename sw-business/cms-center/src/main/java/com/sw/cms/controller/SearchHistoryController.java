@@ -15,6 +15,12 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
+/**
+ * @Description:  
+ * @Author:       allenyll
+ * @Date:         2020/8/12 10:05 下午
+ * @Version:      1.0
+ */
 @Api(value = "搜索记录接口", tags = "搜索记录模块")
 @RestController
 @RequestMapping("searchHistory")

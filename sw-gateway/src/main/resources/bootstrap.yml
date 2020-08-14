@@ -4,13 +4,13 @@ http:
 server:
   port: 443
   ssl:
-    key-store: classpath:xxx
-    key-store-password: xxx
+    key-store: classpath:www.allenyll.com.jks
+    key-store-password: 58024myself?
     keyStoreType: JKS
 
 sw:
   nacos:
-    server-addr: localhost:8848
+    server-addr: ${sw.nacos.ip}:8848
 
 spring:
   application:

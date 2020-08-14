@@ -7,7 +7,6 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
   profiles:
     active: cache, dev
-
 ###################  mybatis-plus配置  ###################
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**/*.xml
@@ -25,7 +24,7 @@ mybatis-plus:
 jwt:
   header: Authorization
   secret: mySecret
-  exp: 64800 #token七天不过期
+  exp: 604800 #token七天不过期
   tokenHead: "Bearer "
   route:
     authentication:
@@ -35,10 +34,7 @@ jwt:
   ignored:
     urls:
       - /test/**
-      - /cache/**W
-      - /wx/**
-      - /sw/**
-      - /api-*/**
+      - /api-uac/*
       - /uac/**
 
 feign:
