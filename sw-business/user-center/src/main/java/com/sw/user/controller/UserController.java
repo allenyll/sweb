@@ -54,9 +54,6 @@ public class UserController extends BaseController<UserServiceImpl, User> {
     @Autowired
     DepotServiceImpl depotService;
 
-    @Value("${user}")
-    String user;
-
     @ApiOperation("测试")
     @RequestMapping(value = "test", method = RequestMethod.POST)
     public DataResponse test() {
@@ -111,6 +108,7 @@ public class UserController extends BaseController<UserServiceImpl, User> {
         return userService.getUserRoleMenuList(params);
     }
 
+    @Override
     @ApiOperation(value = "根据ID获取用户")
     @ResponseBody
     @RequestMapping(value = "{id}", method = RequestMethod.GET)

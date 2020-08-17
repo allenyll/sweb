@@ -8,6 +8,9 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.ComponentScan;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+/**
+ * @author yuleilei
+ */
 @EnableLoginArgResolver
 @EnableFeignClients("com.sw")
 @ComponentScan("com.sw")
