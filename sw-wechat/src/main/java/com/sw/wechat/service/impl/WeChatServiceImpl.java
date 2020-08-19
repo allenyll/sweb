@@ -181,11 +181,12 @@ public class WeChatServiceImpl implements IWeChatService {
         String str = AESUtil.wxDecrypt(encryptedData, response.getSessionKey(), iv);
         JSONObject json = JSONObject.fromObject(str);
         String phoneNumber = json.getString("phoneNumber");
+        String currentOpenId = cacheUtil.get(CacheKeys.WX_CURRENT_OPENID + "_" + response.getOpenid());
         if(StringUtil.isNotEmpty(phoneNumber)){
-            if(response.getOpenid().equals(AppContext.getCurrentUserWechatOpenId())){
+            if(response.getOpenid().equals(currentOpenId)){
                 Map<String, Object> _map = new HashMap<>();
                 _map.put("MARK", BaseConstants.SW_WECHAT);
-                _map.put("OPENID", AppContext.getCurrentUserWechatOpenId());
+                _map.put("OPENID", currentOpenId);
                 Customer customer = customerFeignClient.selectOne(_map);
                 if(customer != null ){
                     customer.setPhone(phoneNumber);
